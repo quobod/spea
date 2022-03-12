@@ -116,3 +116,14 @@ addHandler(elements.hangupButton, "click", () => {
 addHandler(elements.finishChatButton, "click", () => {
   webRTCHandler.handleHangup();
 });
+
+addHandler(elements.peersLink, "click", () => {
+  log(`\n\tPeers link clicked\n`);
+
+  elements.peersList.classList.toggle("show");
+  setTimeout(() => {
+    elements.peersLink.innerHTML = elements.peersList.classList.contains("show")
+      ? "Hide Peers"
+      : "Show Peers";
+  }, 450);
+});

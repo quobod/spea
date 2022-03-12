@@ -1,4 +1,4 @@
-import * as elements from "./chat/elements.js";
+import * as elements from "./dashboardelements.js";
 import {
   addHandler,
   log,
@@ -11,7 +11,7 @@ import {
 import * as wss from "./chat/wss.js";
 
 // init socket connection
-const socket = io("/");
+// const socket = io("/");
 
 const start = () => {
   console.log(`\n\t\tLanded on the dashboard view\n`);
@@ -223,17 +223,6 @@ function prepareNewContactLink() {
           : "Show Control Panel";
     }, 450);
   }
-
-  if (elements.peersList.classList.contains("show")) {
-    elements.peersList.classList.remove("show");
-    setTimeout(() => {
-      elements.peersLink.innerHTML = elements.peersList.classList.contains(
-        "show"
-      )
-        ? "Hide Peers"
-        : "Show Peers";
-    }, 450);
-  }
 }
 
 function prepareControlPanelLink() {
@@ -244,39 +233,6 @@ function prepareControlPanelLink() {
         elements.newContactForm.classList.contains("show")
           ? "Hide Contact Panel"
           : "Show Contact Panel";
-    }, 450);
-  }
-
-  if (elements.peersList.classList.contains("show")) {
-    elements.peersList.classList.remove("show");
-    setTimeout(() => {
-      elements.peersLink.innerHTML = elements.peersList.classList.contains(
-        "show"
-      )
-        ? "Hide Peers"
-        : "Show Peers";
-    }, 450);
-  }
-}
-
-function preparePeersLinkDropdown() {
-  if (elements.newContactForm.classList.contains("show")) {
-    elements.newContactForm.classList.remove("show");
-    setTimeout(() => {
-      elements.controlPanelLink.innerHTML =
-        elements.newContactForm.classList.contains("show")
-          ? "Hide Contact Panel"
-          : "Show Contact Panel";
-    }, 450);
-  }
-
-  if (elements.controlPanel.classList.contains("show")) {
-    elements.controlPanel.classList.remove("show");
-    setTimeout(() => {
-      elements.controlPanelLink.innerHTML =
-        elements.controlPanel.classList.contains("show")
-          ? "Hide Control Panel"
-          : "Show Control Panel";
     }, 450);
   }
 }

@@ -13,15 +13,14 @@
 </head>
 
 <body>
-    {{#if user}}
-    {{>signedinmenu}}
+    {{>menu}}
+    {{#if chat}}
     {{>peerlist}}
+    {{/if}}
+    {{#if dashboard}}
     {{>controlpanel}}
     {{>contactform}}
-    {{else}}
-    {{>signedoutmenu}}
     {{/if}}
-
     {{>messages}}
 
     <main class="grid-container fluid main">
@@ -45,7 +44,10 @@
 <link rel="stylesheet" href="/assets/css/elements.css">
 <link rel="stylesheet" href="/assets/css/dialog.css">
 <link rel="stylesheet" href="/assets/css/containers.css">
+<script src="/assets/js/utils.js" type="module"></script>
+
 {{#if chat}}
+<script src="/socket.io/socket.io.js"></script>
 <link rel="stylesheet" href="/assets/css/chat/landing.css">
 <link rel="stylesheet" href="/assets/css/chat/dialog.css">
 <link rel="stylesheet" href="/assets/css/chat/containers.css">
@@ -53,14 +55,7 @@
 <link rel="stylesheet" href="/assets/css/chat/elements.css">
 <link rel="stylesheet" href="/assets/css/chat/utils.css">
 <link rel="stylesheet" href="/assets/css/chat/containers.css">
-{{/if}}
-<script src="/socket.io/socket.io.js"></script>
-<script src="/assets/js/utils.js" type="module"></script>
 
-{{#if user}}
-<script src="/assets/js//usermain.js" type="module"></script>
-
-{{#if chat}}
 <script src="/assets/js/chat/recordingutils.js" type="module"></script>
 <script src="/assets/js/chat/elements.js" type="module"></script>
 <script src="/assets/js/chat/constants.js" type="module"></script>
@@ -84,6 +79,10 @@
 </script>
 <script src="/assets/js/chat/main.js" type="module"></script>
 {{/if}}
+
+{{#if user}}
+<script src="/assets/js/dashboardelements.js" type="module"></script>
+<script src="/assets/js/dashboardmain.js" type="module"></script>
 {{else}}
 <script src="/assets/js/authutils.js" type="module"></script>
 {{/if}}

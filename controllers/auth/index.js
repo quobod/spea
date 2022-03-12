@@ -56,6 +56,7 @@ export const userRegister = asyncHandler(async (req, res) => {
     res.render("auth/register", {
       title: "Register",
       csrfToken: req.csrfToken,
+      signin: true,
     });
   } catch (err) {
     logger.error(err);

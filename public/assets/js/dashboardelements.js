@@ -7,24 +7,16 @@ import {
   removeAttribute,
 } from "./utils.js";
 
-// RMTUser ID
-export const rmtUser = document.querySelector("#rmtuser");
-
-// Personal Code
-export const personalCode = document.querySelector("#personal-code");
-
 // Dialog
 export const dialog = document.querySelector("#dialog");
 
 // Partials
-export const peersList = document.querySelector("#peers-list");
 export const newContactForm = document.querySelector("#new-contact-form");
 export const controlPanel = document.querySelector("#control-panel");
 
 // Signed In Menu
 export const showPresenceInput = document.querySelector("#show-presence-input");
 export const showPresence = document.querySelector("#show-presence");
-export const peersLink = document.querySelector("#peers-list-link");
 export const newContactLink = document.querySelector("#new-contact-link");
 export const controlPanelLink = document.querySelector("#control-panel-link");
 

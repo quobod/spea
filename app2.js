@@ -187,6 +187,17 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("changevisibility", (data) => {
+    const { userId, show } = data;
+
+    const peer = userManager.getUser(userId);
+
+    if (peer) {
+      peer.hide = show;
+      io.emit("updateuserlist", userManager.getUsers());
+    }
+  });
+
   socket.on("disconnect", () => {
     const user = userManager.getUser(socket.id);
 

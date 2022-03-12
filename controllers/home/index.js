@@ -9,7 +9,10 @@ export const getLanding = asyncHandler(async (req, res) => {
   logger.info(`Route: /`);
 
   try {
-    res.render("landing/home", { title: process.env.SITE_NAME || "RMT" });
+    res.render("landing/home", {
+      title: process.env.SITE_NAME || "RMT",
+      landing: true,
+    });
   } catch (err) {
     logger.error(err);
     res.status(500).json({
