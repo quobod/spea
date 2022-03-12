@@ -1,0 +1,46 @@
+.box1,
+.box2,
+.box3 {
+  background-color: rgb(10, 10, 125);
+  color: rgb(255, 255, 255);
+  border-radius: 15px;
+  position: relative;
+  width: 100%;
+}
+
+.box1 p,
+.box2 p,
+.box3 p {
+  margin: auto;
+  text-align: center;
+}
+
+.box1 p i,
+.box2 p i,
+.box3 p i {
+  margin: 100px;
+  text-align: center;
+}
+
+.box2 p {
+  font-size: 3rem;
+  font-weight: bolder;
+  padding: 10px;
+}
+
+.box1 div p i {
+  font-size: 15rem;
+  padding: 20px;
+  margin: 200px;
+}
+
+.box3 p i {
+  font-size: 15rem;
+  padding: 20px;
+  margin: 0;
+}
+
+.box3 p {
+  margin: 1px;
+  padding: 0;
+}

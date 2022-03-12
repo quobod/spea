@@ -1,0 +1,10 @@
+.dashboard-personal-code {
+  font-size: small;
+  font-weight: bold;
+}
+
+.dashboard-personal-code-title {
+  font-weight: bolder;
+  font-size: large;
+  margin: 0 auto 10px auto;
+}

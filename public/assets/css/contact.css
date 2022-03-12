@@ -1,0 +1,38 @@
+#new-contact-form {
+  position: absolute;
+  left: 10%;
+  z-index: 110;
+  background-color: rgb(8, 62, 128);
+  border-radius: 15px;
+  color: white;
+  transform: translate3d(0, -300%, 0);
+  transition: transform 0.6s;
+}
+
+#new-contact-form.show {
+  transform: translate3d(0, 0, 0);
+}
+
+.edit-contact-controls {
+  margin: auto;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-contact-controls .button {
+  font-size: small;
+  font-weight: bolder;
+  border-radius: 15px;
+}
+
+#edit-contact-form {
+  width: 100%;
+  height: 400px;
+  background-color: transparent;
+  overflow: scroll;
+}
+
+.fa-trash:hover {
+  cursor: pointer;
+}

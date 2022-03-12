@@ -1,0 +1,39 @@
+<div id="new-contact-form" class="grid-container fluid">
+
+    {{#if error}}
+    <div class="grid-container" style="align-items: stretch;flow-direction:row;margin:0;padding:15px;">
+        {{#each errors}}
+        {{#each . as |key value|}}
+        <p class="cell small-12 lead" style="margin:0;">{{key}}</p>
+        {{/each}}
+        {{/each}}
+    </div>
+    {{/if}}
+
+    <div class="grid-container form-container" style="margin:5% auto 5% auto;">
+        <form action="/user/contacts/add" method="post" class="grid-x grid-margin-y">
+            <div class="cell small-12">
+                <input type="text" name="fname" id="contact-fname" class="input-control" placeholder="First Name"
+                    required />
+            </div>
+
+            <div class="cell small-12">
+                <input type="text" name="lname" id="contact-lname" class="input-control" placeholder="Last Name"
+                    required />
+            </div>
+
+            <div class="cell small-12">
+                <input type="email" name="email" id="contact-email" class="input-control" placeholder="Email"
+                    required />
+            </div>
+
+            <div class="cell small-12">
+                <input type="tel" name="phone" id="contact-phone" class="input-control" placeholder="Phone" required />
+            </div>
+
+            <input type="hidden" name="_csrf" value="{{csrfToken}}" required>
+
+            <input id="contact-submit-button" type="submit" class="button" type="button" style="border-radius: 15px;">
+        </form>
+    </div>
+</div>

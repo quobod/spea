@@ -1,0 +1,15 @@
+.dashboard-container {
+  background-color: #eff1f3;
+  color: rgb(1, 23, 56);
+  border: solid 1pt rgb(210, 227, 244);
+  border-radius: 15px;
+}
+
+.dashboard-personal-code-title-container {
+  background-color: rgba(46, 3, 3, 0.3);
+  border-radius: 15px;
+}
+
+#personal-code-parent {
+  top: 0;
+}

@@ -1,0 +1,58 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{{title}}}</title>
+    <script type="javascript" src="https://kit.fontawesome.com/e13fb8b113.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/assets/css/all.css">
+    <link rel="stylesheet" href="/assets/css/foundation.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js" type="javascript"></script>
+</head>
+
+<body>
+    {{#if user}}
+    {{>signedinmenu}}
+    {{>peerlist}}
+    {{>controlpanel}}
+    {{>contactform}}
+    {{else}}
+    {{>signedoutmenu}}
+    {{/if}}
+
+    {{>messages}}
+
+    <main class="grid-container fluid main">
+        {{{body}}}
+    </main>
+    <script src="/assets/js/vendor.js" type="javascript"></script>
+    <script src="/assets/js/foundation.js" type="javascript"></script>
+    <script type="javascript">
+         $(document).ready(function() {
+            $(document).foundation();
+         })       
+    </script>
+    <p class="lead float-center" style="margin:0;padding:20px;text-algin:center;">
+        &copy; RMedia Technology
+    </p>
+</body>
+<link rel="stylesheet" href="/assets/css/accordion.css">
+<link rel="stylesheet" href="/assets/css/controlpanel.css">
+<link rel="stylesheet" href="/assets/css/contact.css">
+<link rel="stylesheet" href="/assets/css/landing.css">
+<link rel="stylesheet" href="/assets/css/elements.css">
+<link rel="stylesheet" href="/assets/css/dialog.css">
+<link rel="stylesheet" href="/assets/css/containers.css">
+<script src="/socket.io/socket.io.js"></script>
+<script src="/assets/js/utils.js" type="module"></script>
+
+{{#if user}}
+<script src="/assets/js/wss.js" type="module"></script>
+<script src="/assets/js/main.js" type="module"></script>
+{{else}}
+<script src="/assets/js/authutils.js" type="module"></script>
+{{/if}}
+
+</html>

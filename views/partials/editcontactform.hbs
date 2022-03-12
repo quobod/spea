@@ -1,0 +1,38 @@
+<form id="edit-contact-form" action="/user/contacts/contact/{{doc._id}}" method="POST">
+    <div class="input-group">
+        <span class="input-group-label">First Name</span>
+
+        <input type="text" name="fname" value="{{doc.fname}}" class="input-group-field" required>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-label">Last Name</span>
+
+        <input type="text" name="lname" value="{{doc.lname}}" class="input-group-field" required>
+    </div>
+
+    {{#each doc.emails as |key val|}}
+    <div class="input-group">
+        <span class="input-group-label">
+            <f class="fa-solid fa-envelope"></f>
+        </span>
+
+        <input type="email" name="email{{val}}" value="{{key}}" class="input-group-field">
+    </div>
+    {{/each}}
+
+    {{#each doc.phones as |key val|}}
+    <div class="input-group">
+        <span class="input-group-label">
+            <f class="fa-solid fa-phone"></f>
+        </span>
+
+        <input type="tel" name="phone{{val}}" value="{{key}}" class="input-group-field">
+    </div>
+    {{/each}}
+
+    <input type="hidden" name="rmtid" value="{{doc._id}}">
+    <div class="input-group-button">
+        <input type="submit" class="button" value="Submit">
+    </div>
+</form>

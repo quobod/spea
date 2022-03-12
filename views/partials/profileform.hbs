@@ -1,0 +1,44 @@
+<form id="edit-profile-form" action="/user/profile/update" method="post" class="grid-x grid-margin-y">
+    <div class="input-group">
+        <span class="input-group-label">
+            <i class="fa-solid fa-user"></i>
+        </span>
+
+        <input class="input-group-field" type="text" name="fname" value="{{user.fname}}" required>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-label">
+            <i class="fa-solid fa-user"></i>
+        </span>
+
+        <input class="input-group-field" type="text" name="uname" {{#if user.uname}} value="{{user.uname}}" {{else}}
+            placeholder="Create a username" {{/if}}>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-label">
+            <i class="fa-solid fa-user"></i>
+        </span>
+
+        <input class="input-group-field" type="text" name="lname" value="{{user.lname}}" required>
+    </div>
+
+
+    <div class="input-group">
+        <span class="input-group-label">
+            <i class="fa-solid fa-envelope"></i>
+        </span>
+
+        <input class="input-group-field" type="email" name="email" value="{{user.email}}" required>
+    </div>
+
+    <div class="input-group">
+        <input id="sig-submit-button" type="submit" class="button input-group-field" type="button"
+            style="border-radius: 15px;">
+    </div>
+    {{#if user.reauthenticated}}{{else}}
+    <input type="hidden" name="_csrf" value="{{csrfToken}}" required>{{/if}}
+
+    <input id="rmtuser" type="hidden" value="{{user._id}}" readonly>
+</form>

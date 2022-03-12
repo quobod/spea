@@ -1,0 +1,36 @@
+<div class="title-bar hide" data-responsive-toggle="signedinmenu" data-hide-for="medium">
+    <button class="menu-icon" type="button" data-toggle="signedinmenu"></button>
+    <div class="title-bar-title">Menu</div>
+</div>
+
+<div class="top-bar" id="signedinmenu">
+    <div class="top-bar-left">
+        <ul class="dropdown vertical medium-horizontal menu" data-dropdown-menu>
+            <li class="menu-text">
+                <span class="app-name">
+                    {{#if user}}
+                    {{user.fname}}
+                    {{else}}
+                    RMedia Technology
+                    {{/if}}
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="top-bar-right">
+        <ul class="dropdown vertical medium-horizontal menu">
+            <li>
+                <a href="/user/dashboard" id="signed-in-dashboard-link">
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="/user/profile" id="signed-in-dashboard-link">
+                    Profile
+                </a>
+            </li>
+            <li><a href="/auth/signout">Signout</a></li>
+        </ul>
+    </div>
+</div>

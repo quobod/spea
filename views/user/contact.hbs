@@ -1,0 +1,20 @@
+<div class="main-container grid-container fluid" style="margin:10px;">
+    <div class="grid-x grid-margin-y">
+
+        <div class="cell small-12">
+            {{>editcontactform}}
+        </div>
+
+        <div class="grid-x grid-margin-x edit-contact-controls">
+            <buton id="add-email" type="button" class="button primary cell medium-auto small-12">
+                Add Email
+            </buton>
+
+            <buton id="add-phone" type="button" class="button primary cell medium-auto small-12">
+                Add Phone
+            </buton>
+        </div>
+        <div id="dialog"></div>
+        <input id="rmtuser" type="hidden" value="{{user._id}}" readonly>
+    </div>
+</div>

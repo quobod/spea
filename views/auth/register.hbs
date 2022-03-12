@@ -1,0 +1,42 @@
+{{#if error}}
+<div class="grid-container" style="align-items: stretch;flow-direction:row;margin:0;padding:15px;">
+    {{#each errors}}
+    {{#each . as |key value|}}
+    <p class="cell small-12 lead" style="margin:0;">{{key}}</p>
+    {{/each}}
+    {{/each}}
+</div>
+{{/if}}
+
+<div class="grid-container form-container" style="margin:5% auto 5% auto;">
+    <form action="/auth/register" method="post" class="grid-x grid-margin-y">
+        <div class="cell small-12">
+            <input type="text" name="fname" id="fname" class="input-control" placeholder="First Name" required />
+        </div>
+
+        <div class="cell small-12">
+            <input type="text" name="lname" id="lname" class="input-control" placeholder="Last Name" required />
+        </div>
+
+        <div class="cell small-12">
+            <input type="email" name="email" id="reg-email" class="input-control" placeholder="Email" required />
+        </div>
+
+        <div class="cell small-12">
+            <input type="password" name="pwd" id="reg-pwd" class="input-control" placeholder="Create password"
+                required />
+        </div>
+
+        <div class="cell small-12">
+            <input type="password" name="pwd2" id="reg-pwd2" class="input-control" placeholder="Confirm password"
+                required />
+            <i id="reg-pwd2-error" class="fas fa-asterisk fa-fw hide"
+                style="color:rgb(216, 5, 5);font-size:9px;position:relative;width:100%;margin:0;">
+                &nbsp;<span style="font-size:1rem;margin:0;">Passwords don't match!</span>
+            </i>
+        </div>
+        <input type="hidden" name="_csrf" value="{{csrfToken}}" required>
+
+        <input id="reg-submit-button" type="submit" class="button" type="button" style="border-radius: 15px;">
+    </form>
+</div>
