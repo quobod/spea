@@ -1,3 +1,12 @@
+import { preOfferAnswer } from "./constants.js";
+import {
+  appendChild,
+  newElement,
+  addHandler,
+  addAttribute,
+  removeAttribute,
+} from "./utils.js";
+
 // RMTUser ID
 export const rmtUser = document.querySelector("#rmtuser");
 

@@ -1,4 +1,4 @@
-import * as elements from "./elements.js";
+import * as elements from "./chat/elements.js";
 import {
   addHandler,
   log,
@@ -8,11 +8,10 @@ import {
   addAttribute,
   appendBeforeLastChild,
 } from "./utils.js";
-import * as wss from "./wss.js";
+import * as wss from "./chat/wss.js";
 
 // init socket connection
 const socket = io("/");
-wss.registerSocketEvents(socket);
 
 const start = () => {
   console.log(`\n\t\tLanded on the dashboard view\n`);

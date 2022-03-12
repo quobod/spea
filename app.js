@@ -67,7 +67,7 @@ const sessionMiddleware = session({
 });
 const nanoid = customAlphabet("02468ouqtyminv", 13);
 const __dirname = path.resolve(".");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.SPORT || 8443;
 const ADDRESS = process.env.ADDRESS || "0.0.0.0";
 
 // Express app
@@ -197,6 +197,94 @@ io.on("connection", (socket) => {
     io.emit("updateuserlist", userManager.getUsers());
     logPeers();
   });
+
+  socket.on("preoffer", (data) => {
+    const { calleePersonalCode, callType } = data;
+
+    const callerConnectedPeer = userManager.getUser(socket.id);
+    const calleeConnectedPeer = userManager.getUser(calleePersonalCode);
+
+    const caller = {
+      fname: callerConnectedPeer.fname,
+      lname: callerConnectedPeer.lname,
+      email: callerConnectedPeer.email,
+    };
+
+    if (callerConnectedPeer) {
+      const data = {
+        callerSocketId: socket.id,
+        caller,
+        callType,
+      };
+
+      console.log(
+        `\n\tPreoffer sent by ${callerConnectedPeer.fname} ${
+          callerConnectedPeer.lname
+        } to ${calleeConnectedPeer.fname} ${
+          calleeConnectedPeer.lname
+        }\n\tData:\t${JSON.stringify(data)}`
+      );
+
+      io.to(calleePersonalCode).emit("preoffer", data);
+    } else {
+      const data = { preOfferAnswer: "CALLEE_NOT_FOUND" };
+      io.to(socket.id).emit("preofferanswer", data);
+    }
+  });
+
+  socket.on("preofferanswer", (data) => {
+    console.log(`\n\tPre offer answer came\n\tData: ${JSON.stringify(data)}`);
+
+    const callee = userManager.getUser(socket.id);
+
+    const { callerSocketId, preOfferAnswer } = data;
+
+    const connectedPeer = userManager.getUser(callerSocketId);
+
+    if (connectedPeer) {
+      data.calleeFname = callee.fname;
+      data.calleeLname = callee.lname;
+      data.calleeEmail = callee.email;
+      io.to(callerSocketId).emit("preofferanswer", data);
+    }
+  });
+
+  socket.on("userhungup", (data) => {
+    const { connectedUserSocketId, currentCallee } = data;
+    log(`\n\tHungup data`);
+    log(data);
+    log(`\n\t`);
+    const connectedPeer = userManager.getUser(connectedUserSocketId);
+    const calleePeer = userManager.getUser(currentCallee);
+
+    if (connectedPeer) {
+      log(`\n\tCaller ${stringify(connectedPeer)} hungup call`);
+      // io.to(socket.id).emit("userhungup");
+      io.to(connectedPeer).emit("userhungup");
+    }
+
+    io.to(currentCallee).emit("userhungup");
+  });
+
+  socket.on("webrtcsignaling", (data) => {
+    const { connectedUserSocketId } = data;
+
+    console.log(
+      `\n\tReceived web rtc signaling event from ${socket.id}\n\tSending data to ${connectedUserSocketId}`
+    );
+
+    const connectedPeer = userManager.getUser(connectedUserSocketId);
+
+    if (connectedPeer) {
+      io.to(connectedUserSocketId).emit("webrtcsignaling", data);
+    } else {
+      console.log(
+        `\n\tError within the io server webrtcsignaling event handler\n\tReceived data: ${JSON.stringify(
+          data
+        )}`
+      );
+    }
+  });
 });
 
 server.listen(PORT, () => {
@@ -222,13 +310,13 @@ async function registerMe(userData, done) {
   await User.findById(rmtId)
     .then((user) => {
       const res = user.withoutPassword();
-      const addedUser = {
+      const results = userManager.addUser({
         socketId,
         rmtId,
-        ...res,
-      };
-
-      const results = userManager.addUser(addedUser);
+        fname: user.fname,
+        lname: user.lname,
+        email: user.email,
+      });
 
       if (results) {
         done({ status: true, userlist: userManager.getUsers() });
@@ -241,4 +329,13 @@ async function registerMe(userData, done) {
       log(`\n\tError in the registerMe method`);
       log(err);
     });
+}
+
+function letsencryptOptions(domain) {
+  const path = "/etc/letsencrypt/live/";
+  return {
+    key: fs.readFileSync(path + domain + "/privkey.pem"),
+    cert: fs.readFileSync(path + domain + "/cert.pem"),
+    ca: fs.readFileSync(path + domain + "/chain.pem"),
+  };
 }

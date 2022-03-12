@@ -10,6 +10,7 @@ import {
   viewUserProfile,
   userReauth,
   updateUserProfile,
+  userChat,
 } from "../../controllers/user/index.js";
 import { signedIn, reauthorize } from "../../middleware/AuthMiddleware.js";
 import { lettersOnly } from "../../custom_modules/index.js";
@@ -43,5 +44,7 @@ user.route("/contacts/contact/delete/:contactId").get(signedIn, deleteContact);
 user.route("/profile").get(reauthorize, viewUserProfile).post(userReauth);
 
 user.route("/profile/update").post(updateUserProfile);
+
+user.route("/chat").get(signedIn, userChat);
 
 export default user;

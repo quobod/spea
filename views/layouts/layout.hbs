@@ -45,12 +45,45 @@
 <link rel="stylesheet" href="/assets/css/elements.css">
 <link rel="stylesheet" href="/assets/css/dialog.css">
 <link rel="stylesheet" href="/assets/css/containers.css">
+{{#if chat}}
+<link rel="stylesheet" href="/assets/css/chat/landing.css">
+<link rel="stylesheet" href="/assets/css/chat/dialog.css">
+<link rel="stylesheet" href="/assets/css/chat/containers.css">
+<link rel="stylesheet" href="/assets/css/chat/controls.css">
+<link rel="stylesheet" href="/assets/css/chat/elements.css">
+<link rel="stylesheet" href="/assets/css/chat/utils.css">
+<link rel="stylesheet" href="/assets/css/chat/containers.css">
+{{/if}}
 <script src="/socket.io/socket.io.js"></script>
 <script src="/assets/js/utils.js" type="module"></script>
 
 {{#if user}}
-<script src="/assets/js/wss.js" type="module"></script>
-<script src="/assets/js/main.js" type="module"></script>
+<script src="/assets/js//usermain.js" type="module"></script>
+
+{{#if chat}}
+<script src="/assets/js/chat/recordingutils.js" type="module"></script>
+<script src="/assets/js/chat/elements.js" type="module"></script>
+<script src="/assets/js/chat/constants.js" type="module"></script>
+<script src="/assets/js/chat/ui.js" type="module"></script>
+<script src="/assets/js/chat/wss.js" type="module"></script>
+<script type="javascript">
+    const getTurnServerCredentials = async () => {
+        log(axios);
+        const responseData = await axios.get("/api/get-turn-credentials");
+        log("\n\n\tTURN Credentials\n" + JSON.stringify(responseData.data)+"\n\n");
+        webRTCHandler.setTurnServers(responseData.data.iceServers);
+    };
+
+    getTurnServerCredentials()
+    .then(() => {
+        webRTCHandler.getLocalPreview();
+    })
+    .catch((err) => {
+        log(err);
+    });
+</script>
+<script src="/assets/js/chat/main.js" type="module"></script>
+{{/if}}
 {{else}}
 <script src="/assets/js/authutils.js" type="module"></script>
 {{/if}}

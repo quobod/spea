@@ -259,9 +259,7 @@ io.on("connection", (socket) => {
     const calleePeer = userManager.getUser(currentCallee);
 
     if (connectedPeer) {
-      log(
-        `\n\tCaller ${connectedPeer.fname} hungup call to ${calleePeer.lname}`
-      );
+      log(`\n\tCaller ${stringify(connectedPeer)} hungup call`);
       // io.to(socket.id).emit("userhungup");
       io.to(connectedPeer).emit("userhungup");
     }

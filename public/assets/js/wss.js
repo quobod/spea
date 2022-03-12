@@ -1,5 +1,5 @@
 import * as store from "./store.js";
-import * as elements from "./elements.js";
+import * as elements from "./userelements.js";
 import * as ui from "./ui.js";
 
 let socketIO = null;

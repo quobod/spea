@@ -7,7 +7,7 @@ import {
   log,
   removeChildren,
 } from "./utils.js";
-import * as elements from "./elements.js";
+import * as elements from "./userelements.js";
 
 const showMessageDialog = (closeButtonHandler) => {
   const dialog = elements.dialog;

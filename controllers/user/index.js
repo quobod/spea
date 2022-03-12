@@ -45,6 +45,28 @@ export const userDashboard = asyncHandler(async (req, res) => {
   }
 });
 
+//  @desc           User Chat
+//  @route          GET /user/chat
+//  @access         Private
+export const userChat = asyncHandler(async (req, res) => {
+  logger.info(`GET: /user/chat`);
+
+  try {
+    const user = req.user.withoutPassword();
+    user.fname = cap(user.fname);
+    user.lname = cap(user.lname);
+
+    res.render("user/chat", {
+      title: "Chat",
+      user: user,
+      chat: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(200).json({ status: JSON.stringify(err) });
+  }
+});
+
 //  @desc           Add new contact
 //  @route          POST /user/contacts
 //  @access         Private
