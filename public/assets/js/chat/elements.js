@@ -216,3 +216,8 @@ export const personalCode = document.querySelector("#personal-code");
 export const peersList = document.querySelector("#peers-list");
 
 export const peersLink = document.querySelector("#peers-list-link");
+
+// Settings
+export const settings = document.querySelector("#settings");
+export const settingsLink = document.querySelector("#settings-link");
+export const hideMeCheckbox = document.querySelector("#hide-me-checkbox");

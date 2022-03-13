@@ -103,8 +103,8 @@ if (document.title.toLowerCase().trim() == "dashboard") {
     setTimeout(() => {
       elements.controlPanelLink.innerHTML =
         elements.controlPanel.classList.contains("show")
-          ? "Hide Control Panel"
-          : "Show Control Panel";
+          ? "Hide Search"
+          : "Show Search";
     }, 450);
   });
 

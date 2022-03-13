@@ -119,7 +119,7 @@ addHandler(elements.finishChatButton, "click", () => {
 
 addHandler(elements.peersLink, "click", () => {
   log(`\n\tPeers link clicked\n`);
-
+  preparePeerListPanel();
   elements.peersList.classList.toggle("show");
   setTimeout(() => {
     elements.peersLink.innerHTML = elements.peersList.classList.contains("show")
@@ -127,3 +127,49 @@ addHandler(elements.peersLink, "click", () => {
       : "Show Peers";
   }, 450);
 });
+
+addHandler(elements.settingsLink, "click", () => {
+  log(`\n\tSettings link clicked\n`);
+  prepareSettingsPanel();
+  elements.settings.classList.toggle("show");
+  setTimeout(() => {
+    elements.settingsLink.innerHTML = elements.settings.classList.contains(
+      "show"
+    )
+      ? "Hide Settings"
+      : "Show Settings";
+  }, [1200]);
+});
+
+addHandler(elements.hideMeCheckbox, "click", (e) => {
+  const checked = e.target.checked;
+  const userId = elements.personalCodeParagraph.innerHTML;
+  wss.hideMe({ userId, show: checked });
+});
+
+// Helper functions
+function prepareSettingsPanel() {
+  if (elements.peersList.classList.contains("show")) {
+    elements.peersList.classList.remove("show");
+    setTimeout(() => {
+      elements.peersLink.innerHTML = elements.peersList.classList.contains(
+        "show"
+      )
+        ? "Hide Peers"
+        : "Show Peers";
+    }, 450);
+  }
+}
+
+function preparePeerListPanel() {
+  if (elements.settings.classList.contains("show")) {
+    elements.settings.classList.remove("show");
+    setTimeout(() => {
+      elements.settingsLink.innerHTML = elements.settings.classList.contains(
+        "show"
+      )
+        ? "Hide Settings"
+        : "Show Settings";
+    }, 450);
+  }
+}

@@ -178,6 +178,8 @@ io.on("connection", (socket) => {
   socket.on("changevisibility", (data) => {
     const { userId, show } = data;
 
+    console.log(`\n\tUser ${userId} wants to go invisible: ${show}`);
+
     const peer = userManager.getUser(userId);
 
     if (peer) {
