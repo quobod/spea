@@ -138,13 +138,26 @@ addHandler(elements.settingsLink, "click", () => {
     )
       ? "Hide Settings"
       : "Show Settings";
-  }, [1200]);
+  }, [400]);
 });
 
 addHandler(elements.hideMeCheckbox, "click", (e) => {
   const checked = e.target.checked;
   const userId = elements.personalCodeParagraph.innerHTML;
+
+  if (!checked) {
+    elements.settingsIcon.classList.remove("fa-eye-slash");
+    elements.settingsIcon.classList.add("fa-eye");
+  } else {
+    elements.settingsIcon.classList.remove("fa-eye");
+    elements.settingsIcon.classList.add("fa-eye-slash");
+  }
+
   wss.hideMe({ userId, show: checked });
+});
+
+addHandler(elements.personalCodeInput, "click", (e) => {
+  e.target.value = "";
 });
 
 // Helper functions

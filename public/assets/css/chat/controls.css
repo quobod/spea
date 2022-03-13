@@ -65,3 +65,7 @@ input[type="text"]#personal-code-input {
 #settings.show {
   transform: translate3d(0, 0, 0);
 }
+
+.button {
+  border-radius: 15px;
+}

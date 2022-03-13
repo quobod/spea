@@ -220,4 +220,5 @@ export const peersLink = document.querySelector("#peers-list-link");
 // Settings
 export const settings = document.querySelector("#settings");
 export const settingsLink = document.querySelector("#settings-link");
+export const settingsIcon = document.querySelector("#settings-icon");
 export const hideMeCheckbox = document.querySelector("#hide-me-checkbox");
