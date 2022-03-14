@@ -392,3 +392,5 @@ export const handleHangup = () => {
   wss.sendUserHungup(data);
   closePeerConnectionResetState();
 };
+
+export const peerConnectionObject = () => peerConnection;

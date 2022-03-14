@@ -372,13 +372,14 @@ export const updateUiAfterHungup = (callType) => {
 export const updateUserList = (data) => {
   if (elements.peersList) {
     const userList = elements.peersList;
+    const personalCodeParagraph =
+      elements.personalCodeParagraph.innerHTML.trim();
     removeChildren(userList);
 
     data.forEach((item, index) => {
       if (!item.hide) {
         const divPanel = newElement("div");
         const button = newElement("button");
-        const callButton = newElement("button");
         const divContent = newElement("div");
         const pFname = newElement("p");
         const pLname = newElement("p");
@@ -390,17 +391,13 @@ export const updateUserList = (data) => {
         appendChild(divContent, pFname);
         appendChild(divContent, pLname);
         appendChild(divContent, pEmail);
-        appendChild(divContent, callButton);
 
         addAttribute(divPanel, "class", "panel");
         addAttribute(divPanel, "style", "z-index: 101;background:transparent;");
         addAttribute(button, "class", "accordion");
-        addAttribute(callButton, "class", "button primary");
-        addAttribute(callButton, "id", `${item.uid}`);
         // addAttribute(divContent, "class", "cell small-12");
 
         button.innerHTML = `${item.fname} ${item.lname}`;
-        callButton.innerHTML = `Call`;
         pEmail.innerHTML = `${item.email}`;
         pFname.innerHTML = `${item.fname}`;
         pLname.innerHTML = `${item.lname}`;
@@ -415,11 +412,19 @@ export const updateUserList = (data) => {
           }
         });
 
-        addHandler(callButton, "click", (e) => {
-          const target = e.target;
-          console.log(`Target ID: ${target.id}`);
-          elements.personalCodeInput.value = `${target.id}`;
-        });
+        if (item.uid != personalCodeParagraph) {
+          const callButton = newElement("button");
+          appendChild(divContent, callButton);
+          addAttribute(callButton, "class", "button primary");
+          addAttribute(callButton, "id", `${item.uid}`);
+          callButton.innerHTML = `Call`;
+
+          addHandler(callButton, "click", (e) => {
+            const target = e.target;
+            console.log(`Target ID: ${target.id}`);
+            elements.personalCodeInput.value = `${target.id}`;
+          });
+        }
       }
     });
   }

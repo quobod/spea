@@ -47,6 +47,7 @@
 <link rel="stylesheet" href="/assets/css/containers.css">
 <script src="/assets/js/utils.js" type="module"></script>
 
+{{#if user}}
 {{#if chat}}
 <script src="/socket.io/socket.io.js"></script>
 <link rel="stylesheet" href="/assets/css/chat/landing.css">
@@ -80,8 +81,6 @@
 </script>
 <script src="/assets/js/chat/main.js" type="module"></script>
 {{/if}}
-
-{{#if user}}
 <script src="/assets/js/dashboardelements.js" type="module"></script>
 <script src="/assets/js/dashboardmain.js" type="module"></script>
 {{else}}

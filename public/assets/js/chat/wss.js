@@ -60,6 +60,7 @@ export const registerSocketEvents = (socket) => {
   });
 
   socket.on("updateuserlist", (data) => {
+    console.log(`\n\tUpdated User List: ${JSON.stringify(data)}\n\n`);
     ui.updateUserList(data);
   });
 
