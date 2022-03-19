@@ -12,6 +12,30 @@ import * as ui from "./ui.js";
 const socket = io("/");
 wss.registerSocketEvents(socket);
 
+const getTurnServerCredentials = async () => {
+  await fetch("/api/get-turn-credentials")
+    .then((returnedData) => {
+      returnedData
+        .json()
+        .then((data) => {
+          console.log(data.iceServers);
+          webRTCHandler.setTurnServers(data.iceServers);
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    })
+    .catch((err) => {
+      console.log(`\n\tfetch error`);
+      console.log(err);
+      return;
+    });
+  // webRTCHandler.setTurnServers(responseData.data.iceServers);
+};
+
+getTurnServerCredentials();
+
 // register event listener for personal code button
 addHandler(elements.personalCodeCopyButton, "click", () => {
   const personalCode = store.getState().socketId;

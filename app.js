@@ -1,6 +1,6 @@
 import express from "express";
 import { Server } from "socket.io";
-import http from "http";
+import https from "https";
 import path from "path";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
@@ -69,6 +69,7 @@ const nanoid = customAlphabet("02468ouqtyminv", 13);
 const __dirname = path.resolve(".");
 const PORT = process.env.SPORT || 8443;
 const ADDRESS = process.env.ADDRESS || "0.0.0.0";
+const options = letsencryptOptions("rmediatech.com");
 
 // Express app
 const app = express();
@@ -134,18 +135,25 @@ app.use(function (req, res, next) {
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/api/get-turn-credentials", (req, res) => {
-  const accountSid = process.env.ACCOUNT_SID;
-  const authToken = process.env.AUTH_TOKEN;
-  const client = twilio(accountSid, authToken);
-  client.tokens
-    .create()
-    .then((token) => {
-      res.send(token);
-    })
-    .catch((err) => {
-      log("\n\t" + err);
-      res.send({ message: "failed to get token" });
+  // create the twilioClient
+  try {
+    const client = twilio(process.env.APP_SID, process.env.APP_SECRET, {
+      accountSid: process.env.ACCT_SID,
     });
+
+    client.tokens
+      .create()
+      .then((token) => {
+        res.send(token);
+      })
+      .catch((err) => {
+        log("\n\t" + err);
+        res.send({ status: false, message: "failed to get token" });
+      });
+  } catch (err) {
+    console.log(err);
+    res.send({ status: false });
+  }
 });
 
 app.get(["/*"], csrfProtection, (req, res, next) => {
@@ -157,7 +165,7 @@ app.use("/", landing);
 app.use("/auth", auth);
 app.use("/user", user);
 
-const server = http.createServer(app);
+const server = https.createServer(options, app);
 const io = new Server(server);
 
 io.on("connection", (socket) => {
@@ -178,7 +186,16 @@ io.on("connection", (socket) => {
   socket.on("changevisibility", (data) => {
     const { userId, show } = data;
 
-    console.log(`\n\tUser ${userId} wants to go invisible: ${show}`);
+    const peer = userManager.getUser(userId);
+
+    if (peer) {
+      peer.hide = show;
+      io.emit("updateuserlist", userManager.getUsers());
+    }
+  });
+
+  socket.on("changevisibility", (data) => {
+    const { userId, show } = data;
 
     const peer = userManager.getUser(userId);
 
