@@ -16,7 +16,6 @@ import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access
 import { customAlphabet } from "nanoid";
 import csurf from "csurf";
 import flash from "connect-flash";
-import axios from "axios";
 import { fs } from "mz";
 import connectDB from "./config/db.js";
 import passportConfig from "./config/passport.js";
