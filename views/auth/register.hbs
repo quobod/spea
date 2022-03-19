@@ -35,8 +35,33 @@
                 &nbsp;<span style="font-size:1rem;margin:0;">Passwords don't match!</span>
             </i>
         </div>
+
+        <div class="cell small-12">
+            <div class="grid-x" style="margin-bottom: 100px;">
+                <div class="cell medium-6 small-12">
+                    <div class="grid-y">
+                        <div class="cell">
+                            <p class="lead">Enter Random Captcha</p>
+                        </div>
+
+                        <div class="cell">
+                            <img src="{{imgsrc}}" alt="{{captchaFieldName}}" style="max-height:100px;" />
+                        </div>
+
+                        <div class="cell auto">
+                            <input type="text" name="{{captchaFieldName}}" class="lead" placeholder="I'm not a robot"
+                                required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <input type="hidden" name="_csrf" value="{{csrfToken}}" required>
 
+
         <input id="reg-submit-button" type="submit" class="button" type="button" style="border-radius: 15px;">
+
     </form>
 </div>
