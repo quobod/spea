@@ -9,7 +9,6 @@ import passport from "passport";
 import mongoose from "mongoose";
 import session from "express-session";
 import MongoDBStore from "connect-mongodb-session";
-// import { engine } from "express-handlebars";
 import Handlebars from "handlebars";
 import expressHandlebars from "express-handlebars";
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
@@ -20,6 +19,7 @@ import twilio from "twilio";
 import { fs } from "mz";
 import connectDB from "./config/db.js";
 import passportConfig from "./config/passport.js";
+import { create } from "./custom_modules/captcha.js";
 import {
   log,
   cls,
@@ -154,6 +154,12 @@ app.get("/api/get-turn-credentials", (req, res) => {
     res.send({ status: false });
   }
 });
+
+const captchaUrl = "/captcha.jpg";
+const captchaId = "captcha";
+const captcha = create({ cookie: captchaId });
+
+app.get(captchaUrl, captcha.image());
 
 app.get(["/*"], csrfProtection, (req, res, next) => {
   next();
