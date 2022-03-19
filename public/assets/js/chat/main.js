@@ -13,7 +13,7 @@ const socket = io("/");
 wss.registerSocketEvents(socket);
 
 const getTurnServerCredentials = async () => {
-  await fetch("/api/get-turn-credentials")
+  await fetch(new Request("/api/get-turn-credentials"))
     .then((responseData) => responseData.json())
     .then((data) => {
       webRTCHandler.setTurnServers(data.iceServers);
