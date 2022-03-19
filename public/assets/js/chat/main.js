@@ -16,6 +16,7 @@ const getTurnServerCredentials = async () => {
   await fetch(new Request("/api/get-turn-credentials"))
     .then((responseData) => responseData.json())
     .then((data) => {
+      console.log(data.iceServers);
       webRTCHandler.setTurnServers(data.iceServers);
       return;
     })

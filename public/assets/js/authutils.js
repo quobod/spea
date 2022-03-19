@@ -14,6 +14,9 @@ export const regPwd2 = document.querySelector("#reg-pwd2");
 export const regPwd2Error = document.querySelector("#reg-pwd2-error");
 export const regSubmitButton = document.querySelector("#reg-submit-button");
 
+// Message dialog
+export const dialogCloseButton = document.querySelector(".close-button");
+
 // Signin
 if (document.title.toLowerCase().trim() === "signin") {
   console.log("signin");
@@ -107,6 +110,14 @@ if (document.title.toLowerCase().trim() === "register") {
     }
   });
 }
+
+// Messages
+addHandler(dialogCloseButton, "click", (e) => {
+  const target = e.target;
+  const parent = target.parentElement;
+  const grandParent = parent.parentElement;
+  grandParent.remove();
+});
 
 // Helper functions
 
