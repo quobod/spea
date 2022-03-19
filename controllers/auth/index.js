@@ -4,6 +4,7 @@ import passport from "passport";
 import { body, check, validationResult } from "express-validator";
 import User from "../../models/UserModel.js";
 import { stringify, parse, createHash } from "../../custom_modules/index.js";
+import { create } from "../../custom_modules/captcha.js";
 
 const logger = bunyan.createLogger({ name: "Auth Controller" });
 
@@ -17,11 +18,22 @@ export const signinUser = asyncHandler(async (req, res, next) => {
   const { email, pwd } = req.body;
   console.log(`\n\tEmail: ${email}\tPassword: ${pwd}`);
 
-  passport.authenticate("local", {
-    successRedirect: "/user/dashboard",
-    failureRedirect: "/auth/signin",
-    failureFlash: true,
-  })(req, res, next);
+  const captchaId = "captcha";
+  const captchaFieldName = "captcha";
+  const captcha = create({ cookie: captchaId });
+  const captchaValid = captcha.check(req, req.body[captchaFieldName]);
+
+  if (!captchaValid) {
+    console.log(`\n\tCaptcha Invalid`);
+    req.flash("error_msg", "Captcha Invalid");
+    return res.redirect("/auth/signin");
+  } else {
+    passport.authenticate("local", {
+      successRedirect: "/user/dashboard",
+      failureRedirect: "/auth/signin",
+      failureFlash: true,
+    })(req, res, next);
+  }
 });
 
 // @desc        User Signin
@@ -30,11 +42,18 @@ export const signinUser = asyncHandler(async (req, res, next) => {
 export const userSignin = asyncHandler(async (req, res) => {
   logger.info(`GET: /auth/signin`);
 
+  const captchaUrl = "../../captcha.jpg";
+  const captchaId = "captcha";
+  const captchaFieldName = "captcha";
+  const captcha = create({ cookie: captchaId });
+
   try {
     res.render("auth/signin", {
       title: "Signin",
       csrfToken: req.csrfToken,
       signin: true,
+      imgsrc: captchaUrl,
+      captchaFieldName,
     });
   } catch (err) {
     logger.error(err);
@@ -52,11 +71,18 @@ export const userSignin = asyncHandler(async (req, res) => {
 export const userRegister = asyncHandler(async (req, res) => {
   logger.info(`GET: /auth/register`);
 
+  const captchaUrl = "../../captcha.jpg";
+  const captchaId = "captcha";
+  const captchaFieldName = "captcha";
+  const captcha = create({ cookie: captchaId });
+
   try {
     res.render("auth/register", {
       title: "Register",
       csrfToken: req.csrfToken,
-      signin: true,
+      signup: true,
+      imgsrc: captchaUrl,
+      captchaFieldName,
     });
   } catch (err) {
     logger.error(err);
@@ -90,6 +116,15 @@ export const registerUser = (req, res, next) => {
     return `${location}[${param}]: ${msg}`;
   };
 
+  const captchaUrl = "/captcha.jpg";
+  const captchaId = "captcha";
+  const captchaFieldName = "captcha";
+  const captcha = create({ cookie: captchaId });
+  const captchaValid = captcha.check(req, req.body[captchaFieldName]);
+
+  console.log(`Captcha Valid: ${captchaValid}`);
+  // res.status(200).send({ status: captchaValid });
+
   const result = validationResult(req).formatWith(errorFormatter);
   if (!result.isEmpty()) {
     // logger.error(`Registration Failure: ${JSON.stringify(result.array())}`);
@@ -115,6 +150,10 @@ export const registerUser = (req, res, next) => {
       error: true,
       errors: arrResult,
     });
+  } else if (!captchaValid) {
+    console.log(`\n\tCaptcha Invalid`);
+    req.flash("error_msg", "Captcha Invalid");
+    return res.redirect("/auth/register");
   } else {
     passport.authenticate("local-register", {
       successRedirect: "/user/dashboard",

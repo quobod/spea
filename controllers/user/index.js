@@ -4,6 +4,7 @@ import { body, check, validationResult } from "express-validator";
 import { cap, stringify, log } from "../../custom_modules/index.js";
 import Contact from "../../models/Contacts.js";
 import User from "../../models/UserModel.js";
+import { create } from "../../custom_modules/captcha.js";
 
 const logger = bunyan.createLogger({ name: "User Controller" });
 
@@ -345,6 +346,11 @@ export const viewUserProfile = asyncHandler(async (req, res) => {
 export const userReauth = asyncHandler(async (req, res) => {
   logger.info(`POST: /user/reauth`);
 
+  const captchaId = "captcha";
+  const captchaFieldName = "captcha";
+  const captcha = create({ cookie: captchaId });
+  const captchaValid = captcha.check(req, req.body[captchaFieldName]);
+
   const oUser = req.user;
   const { email, pwd } = req.body;
   console.log(
@@ -352,8 +358,11 @@ export const userReauth = asyncHandler(async (req, res) => {
   );
 
   const matched = await oUser.matchPassword(pwd);
-
-  if (matched) {
+  if (!captchaValid) {
+    console.log(`\n\tCaptcha Invalid`);
+    req.flash("error_msg", "Captcha Invalid");
+    return res.redirect("/user/dashboard");
+  } else if (matched) {
     res.render("user/profile", {
       title: `Profile`,
       user: req.user,
