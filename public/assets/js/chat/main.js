@@ -14,24 +14,16 @@ wss.registerSocketEvents(socket);
 
 const getTurnServerCredentials = async () => {
   await fetch("/api/get-turn-credentials")
-    .then((returnedData) => {
-      returnedData
-        .json()
-        .then((data) => {
-          console.log(data.iceServers);
-          webRTCHandler.setTurnServers(data.iceServers);
-        })
-        .catch((err) => {
-          console.log(err);
-          return;
-        });
+    .then((responseData) => responseData.json())
+    .then((data) => {
+      webRTCHandler.setTurnServers(data.iceServers);
+      return;
     })
     .catch((err) => {
       console.log(`\n\tfetch error`);
       console.log(err);
       return;
     });
-  // webRTCHandler.setTurnServers(responseData.data.iceServers);
 };
 
 getTurnServerCredentials();
