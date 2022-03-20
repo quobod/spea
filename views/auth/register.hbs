@@ -1,10 +1,12 @@
 {{#if error}}
 <div class="grid-container" style="align-items: stretch;flow-direction:row;margin:0;padding:15px;">
-    {{#each errors}}
-    {{#each . as |key value|}}
-    <p class="cell small-12 lead" style="margin:0;">{{key}}</p>
-    {{/each}}
-    {{/each}}
+    <div class="grid-y">
+        {{#each errors}}
+        {{#each . as |key value|}}
+        <p class="cell small-12 lead" style="margin:0;">{{key}}</p>
+        {{/each}}
+        {{/each}}
+    </div>
 </div>
 {{/if}}
 
@@ -41,7 +43,7 @@
                 <div class="cell medium-6 small-12">
                     <div class="grid-y">
                         <div class="cell">
-                            <p class="lead">Enter Random Captcha</p>
+                            <p class="lead">Enter the number in the picture</p>
                         </div>
 
                         <div class="cell">

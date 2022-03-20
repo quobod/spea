@@ -130,6 +130,7 @@ export const registerUser = (req, res, next) => {
     // logger.error(`Registration Failure: ${JSON.stringify(result.array())}`);
 
     const err = result.array();
+    console.log(err);
     const arrResult = [];
 
     for (const e in err) {
