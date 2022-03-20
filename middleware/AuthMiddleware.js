@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import User from "../models/UserModel.js";
+import { create } from "../custom_modules/captcha.js";
 
 export const protect = asyncHandler(async (req, res, next) => {
   let token;
@@ -51,10 +52,18 @@ export const reauthorize = asyncHandler(async (req, res, next) => {
     console.log(`\n\tUser authenticated: ${req.isAuthenticated()}\n`);
     const user = req.user.withoutPassword();
 
+    const captchaUrl = "../captcha.jpg";
+    const captchaId = "captcha";
+    const captchaFieldName = "captcha";
+    const captcha = create({ cookie: captchaId });
+
     res.render("auth/signin", {
       title: "Signin",
       reauthenticate: true,
       user: req.user.withoutPassword(),
+      imgsrc: captchaUrl,
+      captchaFieldName,
+      csrfToken: req.csrfToken,
     });
   } else {
     res.redirect("/auth/signin");
