@@ -20,6 +20,7 @@ import { fs } from "mz";
 import twilio from "twilio";
 import connectDB from "./config/db.js";
 import passportConfig from "./config/passport.js";
+import { create } from "./custom_modules/captcha.js";
 import {
   log,
   cls,
@@ -155,6 +156,12 @@ app.get("/api/get-turn-credentials", (req, res) => {
     res.send({ status: false });
   }
 });
+
+const captchaUrl = "/captcha.jpg";
+const captchaId = "captcha";
+const captcha = create({ cookie: captchaId });
+
+app.get(captchaUrl, captcha.image());
 
 app.get(["/*"], csrfProtection, (req, res, next) => {
   next();
