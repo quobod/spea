@@ -13,7 +13,7 @@ import {
   keys,
 } from "../utils.js";
 
-import { muteMicrophone, muteCamera } from "./mediacontrols.js";
+import { muteMicrophone, muteCamera, recordVideo } from "./mediacontrols.js";
 
 // Click Handlers
 
@@ -119,7 +119,7 @@ const handleLocalParticipant = (participant) => {
   const participantParent = newElement("div");
   const videoIcon = newElement("i");
   const microphoneIcon = newElement("i");
-  const pauseIcon = newElement("i");
+  const recordIcon = newElement("i");
   const stopIcon = newElement("i");
   const disconnectIcon = newElement("i");
 
@@ -134,7 +134,7 @@ const handleLocalParticipant = (participant) => {
   addAttribute(videoIcon, "id", "local-video-camera");
   addAttribute(microphoneIcon, "class", "fa-solid fa-microphone fa-2x");
   addAttribute(microphoneIcon, "id", "local-microphone");
-  addAttribute(pauseIcon, "class", "fa-solid fa-pause fa-2x");
+  addAttribute(recordIcon, "class", "fa-solid fa-circle fa-2x");
   addAttribute(stopIcon, "class", "fa-solid fa-stop fa-2x");
   addAttribute(disconnectIcon, "class", "fa-solid fa-square-xmark fa-2x");
   addAttribute(content, "class", "grid-x");
@@ -156,7 +156,7 @@ const handleLocalParticipant = (participant) => {
   appendChild(controls, videoIcon);
   appendChild(controls, microphoneIcon);
   appendChild(controls, disconnectIcon);
-  appendChild(controls, pauseIcon);
+  appendChild(controls, recordIcon);
   appendChild(controls, stopIcon);
 
   // iterate through the participant's published tracks and
@@ -241,6 +241,22 @@ const handleLocalParticipant = (participant) => {
     }
   });
 
+  addClickHandler(recordIcon, (e) => {
+    const recordingEnabled = recordVideo();
+
+    if (recordingEnabled) {
+      recordIcon.classList.remove("fa-circle");
+      recordIcon.classList.add("fa-pause");
+      stopIcon.classList.remove("hide");
+    } else {
+      recordIcon.classList.remove("fa-pause");
+      recordIcon.classList.add("fa-circle");
+      stopIcon.classList.add("hide");
+    }
+  });
+
+  stopIcon.classList.add("hide");
+
   document.title = roomNameInput.value;
 };
 
@@ -250,7 +266,9 @@ const handleDisconnectedParticipant = (participant) => {
   // remove this participant's div from the page
   const participantDiv = document.getElementById(participant.identity);
   removeById(participant.id);
-  participantDiv.parentElement.nextElementSibling.remove();
+  if (participantDiv.parentElement.nextElementSibling) {
+    participantDiv.parentElement.nextElementSibling.remove();
+  }
   participantDiv.remove();
 };
 

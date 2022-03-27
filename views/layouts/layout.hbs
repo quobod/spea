@@ -13,11 +13,9 @@
 
 <body>
     {{>menu}}
-    {{#if chat}}
+    {{#if dashboard}}
     {{>peerlist}}
     {{>settings}}
-    {{/if}}
-    {{#if dashboard}}
     {{>controlpanel}}
     {{>contactform}}
     {{/if}}
@@ -47,39 +45,7 @@
 <script src="/assets/js/utils.js" type="module"></script>
 
 {{#if user}}
-{{#if chat}}
 <script src="/socket.io/socket.io.js"></script>
-<link rel="stylesheet" href="/assets/css/chat/landing.css">
-<link rel="stylesheet" href="/assets/css/chat/dialog.css">
-<link rel="stylesheet" href="/assets/css/chat/containers.css">
-<link rel="stylesheet" href="/assets/css/chat/controls.css">
-<link rel="stylesheet" href="/assets/css/chat/elements.css">
-<link rel="stylesheet" href="/assets/css/chat/utils.css">
-<link rel="stylesheet" href="/assets/css/chat/containers.css">
-
-<script src="/assets/js/chat/recordingutils.js" type="module"></script>
-<script src="/assets/js/chat/elements.js" type="module"></script>
-<script src="/assets/js/chat/constants.js" type="module"></script>
-<script src="/assets/js/chat/ui.js" type="module"></script>
-<script src="/assets/js/chat/wss.js" type="module"></script>
-<script type="javascript">
-    const getTurnServerCredentials = async () => {
-        log(axios);
-        const responseData = await axios.get("/api/get-turn-credentials");
-        log("\n\n\tTURN Credentials\n" + JSON.stringify(responseData.data)+"\n\n");
-        webRTCHandler.setTurnServers(responseData.data.iceServers);
-    };
-
-    getTurnServerCredentials()
-    .then(() => {
-        webRTCHandler.getLocalPreview();
-    })
-    .catch((err) => {
-        log(err);
-    });
-</script>
-<script src="/assets/js/chat/main.js" type="module"></script>
-{{/if}}
 {{#if room}}
 <link rel="stylesheet" href="/assets/css/room/parts.css">
 <script src="/twilio-video.js"></script>

@@ -1,4 +1,3 @@
-import { preOfferAnswer } from "./constants.js";
 import {
   appendChild,
   newElement,
@@ -6,6 +5,8 @@ import {
   addAttribute,
   removeAttribute,
 } from "./utils.js";
+
+export const rmtUser = document.querySelector("#rmtuser");
 
 // Dialog
 export const dialog = document.querySelector("#dialog");
@@ -23,6 +24,7 @@ export const controlPanelLink = document.querySelector("#control-panel-link");
 // Dashboard
 export const searchInput = document.querySelector("#search-input");
 export const hideCheckbox = document.querySelector("#hide-checkbox");
+export const personalCode = document.querySelector("#personal-code");
 
 // New contact form
 export const contactFname = document.querySelector("#contact-fname");
@@ -44,3 +46,13 @@ export const editProfileForm = document.querySelector("#edit-profile-form");
 
 // Messages
 export const closeButton = document.querySelector(".close-button");
+
+// Peers
+export const peersList = document.querySelector("#peers-list");
+export const peersLink = document.querySelector("#peers-list-link");
+
+// Settings
+export const settings = document.querySelector("#settings");
+export const settingsLink = document.querySelector("#settings-link");
+export const settingsIcon = document.querySelector("#settings-icon");
+export const hideMeCheckbox = document.querySelector("#hide-me-checkbox");

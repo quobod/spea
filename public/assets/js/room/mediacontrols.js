@@ -11,20 +11,13 @@ import {
 
 let localCameraMuted = false;
 let localMicrophoneMuted = false;
+let localRecorderEnabled = false;
 
 export const muteMicrophone = (connected, local = false) => {
   if (!localMicrophoneMuted) {
-    localMicrophoneMuted = true;
-    connected.localParticipant.audioTracks.forEach((publication) => {
-      publication.track.disable();
-    });
-    return localMicrophoneMuted;
+    return muteLocalMicrophone(connected);
   } else {
-    localMicrophoneMuted = false;
-    connected.localParticipant.audioTracks.forEach((publication) => {
-      publication.track.enable();
-    });
-    return localMicrophoneMuted;
+    return unmuteLocalMicrophone(connected);
   }
 };
 
@@ -37,6 +30,35 @@ export const muteCamera = (connected, local = false) => {
     return unmuteLocalVideoDevice(connected);
   }
 };
+
+export const recordVideo = () => {
+  if (!localRecorderEnabled) {
+    localRecorderEnabled = true;
+  } else {
+    localRecorderEnabled = false;
+  }
+  return localRecorderEnabled;
+};
+
+export const shareScreen = () => {};
+
+export const snapPicture = () => {};
+
+function unmuteLocalMicrophone(connected) {
+  localMicrophoneMuted = false;
+  connected.localParticipant.audioTracks.forEach((publication) => {
+    publication.track.enable();
+  });
+  return localMicrophoneMuted;
+}
+
+function muteLocalMicrophone(connected) {
+  localMicrophoneMuted = true;
+  connected.localParticipant.audioTracks.forEach((publication) => {
+    publication.track.disable();
+  });
+  return localMicrophoneMuted;
+}
 
 function unmuteLocalVideoDevice(connected) {
   localCameraMuted = false;

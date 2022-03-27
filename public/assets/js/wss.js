@@ -1,5 +1,5 @@
 import * as store from "./store.js";
-import * as elements from "./userelements.js";
+import * as elements from "./dashboardelements.js";
 import * as ui from "./ui.js";
 
 let socketIO = null;
@@ -20,6 +20,7 @@ export const registerSocketEvents = (socket) => {
   });
 
   socket.on("updateuserlist", (data) => {
+    console.log(`\n\tUpdated User List: ${JSON.stringify(data)}\n\n`);
     ui.updateUserList(data);
   });
 
