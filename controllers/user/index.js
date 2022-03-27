@@ -1,12 +1,61 @@
 import asyncHandler from "express-async-handler";
 import bunyan from "bunyan";
 import { body, check, validationResult } from "express-validator";
+import twilio from "twilio";
+import { customAlphabet } from "nanoid";
 import { cap, stringify, log } from "../../custom_modules/index.js";
 import Contact from "../../models/Contacts.js";
 import User from "../../models/UserModel.js";
 import { create } from "../../custom_modules/captcha.js";
 
 const logger = bunyan.createLogger({ name: "User Controller" });
+const nanoid = customAlphabet("02468ouqtyminv", 13);
+const AccessToken = twilio.jwt.AccessToken;
+const VideoGrant = AccessToken.VideoGrant;
+
+const findOrCreateRoom = async (roomName) => {
+  let twilioClient;
+
+  try {
+    twilioClient = twilio(process.env.API_KEY, process.env.APP_SECRET, {
+      accountSid: process.env.ACCT_SID,
+    });
+    // see if the room exists already. If it doesn't, this will throw
+    // error 20404.
+    await twilioClient.video.rooms(roomName).fetch();
+  } catch (error) {
+    // the room was not found, so create it
+    if (error.code == 20404) {
+      await twilioClient.video.rooms.create({
+        uniqueName: roomName,
+        type: "go",
+      });
+    } else {
+      // let other errors bubble up
+      throw error;
+    }
+  }
+};
+
+const getAccessToken = (roomName) => {
+  // create an access token
+  const token = new AccessToken(
+    process.env.ACCT_SID,
+    process.env.API_KEY,
+    process.env.APP_SECRET,
+    // generate a random unique identity for this participant
+    { identity: nanoid() }
+  );
+  // create a video grant for this specific room
+  const videoGrant = new VideoGrant({
+    room: roomName,
+  });
+
+  // add the video grant
+  token.addGrant(videoGrant);
+  // serialize the token and return it
+  return token.toJwt();
+};
 
 //  @desc           User Dashboard
 //  @route          GET /user/dashboard
@@ -57,10 +106,10 @@ export const userChat = asyncHandler(async (req, res) => {
     user.fname = cap(user.fname);
     user.lname = cap(user.lname);
 
-    res.render("user/chat", {
+    res.render("user/room", {
       title: "Chat",
       user: user,
-      chat: true,
+      room: true,
     });
   } catch (err) {
     console.log(err);
@@ -378,6 +427,7 @@ export const userReauth = asyncHandler(async (req, res) => {
 //  @route          POST /user/profile/update
 //  @access         Private
 export const updateUserProfile = asyncHandler(async (req, res) => {
+  logger.info(`POST: /user/profile/update`);
   const user = req.user.withoutPassword();
   const data = req.body;
   const updatedData = {
@@ -402,4 +452,46 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 
     res.redirect("/user/dashboard");
   });
+});
+
+//  @desc           Video Chat
+//  @route          POST /user/chat
+//  @access         Private
+export const joinRoom = asyncHandler(async (req, res) => {
+  logger.info(`POST: /user/chat`);
+  const user = req.user.withoutPassword();
+
+  // return 400 if the request has an empty body or no roomName
+  if (!req.body || !req.body.roomName) {
+    req.flash("warning_msg", "Must enter a room name");
+    return res.redirect("/user/dashboard");
+  }
+
+  const roomName = req.body.roomName;
+  try {
+    // find or create a room with the given roomName
+    findOrCreateRoom(roomName);
+
+    // generate an Access Token for a participant in this room
+    const token = getAccessToken(roomName);
+
+    if (token) {
+      console.log(`\n\tToken Success: ${token}\n`);
+
+      res.render("user/room", {
+        title: "Chat",
+        user: user,
+        room: true,
+        hasToken: true,
+        token,
+        roomName,
+      });
+    } else {
+      console.log(`\n\tToken Failure`);
+      return res.redirect("/user/dashboard");
+    }
+  } catch (err) {
+    console.log(`\n\tjoinRoom error\n\t\t${err}\n`);
+    return res.redirect("/user/dashboard");
+  }
 });

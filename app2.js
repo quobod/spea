@@ -131,12 +131,13 @@ app.use(function (req, res, next) {
 });
 
 // Static assets
+app.use(express.static("node_modules/twilio-video/dist/"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/api/get-turn-credentials", (req, res) => {
   // create the twilioClient
   try {
-    const client = twilio(process.env.APP_SID, process.env.APP_SECRET, {
+    const client = twilio(process.env.API_KEY, process.env.APP_SECRET, {
       accountSid: process.env.ACCT_SID,
     });
 

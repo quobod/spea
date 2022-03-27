@@ -9,7 +9,6 @@
     <script type="javascript" src="https://kit.fontawesome.com/e13fb8b113.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/assets/css/all.css">
     <link rel="stylesheet" href="/assets/css/foundation.css">
-    <script src="https://unpkg.com/axios/dist/axios.min.js" type="javascript"></script>
 </head>
 
 <body>
@@ -34,7 +33,7 @@
             $(document).foundation();
          })       
     </script>
-    <p class="lead float-center" style="margin:0;padding:20px;text-algin:center;">
+    <p class="lead float-center" style="margin:0;padding:20px;text-algin:center;bottom:10px;">
         &copy; RMedia Technology
     </p>
 </body>
@@ -82,10 +81,14 @@
 <script src="/assets/js/chat/main.js" type="module"></script>
 {{/if}}
 {{#if room}}
-
+<link rel="stylesheet" href="/assets/css/room/parts.css">
+<script src="/twilio-video.js"></script>
+<script src="/assets/js/room/roommain.js" type="module"></script>
 {{/if}}
+{{#if dashboard}}
 <script src="/assets/js/dashboardelements.js" type="module"></script>
 <script src="/assets/js/dashboardmain.js" type="module"></script>
+{{/if}}
 {{else}}
 <script src="/assets/js/dashboardelements.js" type="module"></script>
 <script src="/assets/js/authutils.js" type="module"></script>

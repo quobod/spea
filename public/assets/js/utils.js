@@ -46,9 +46,11 @@ export const getElement = (nameIdClass) => {
   let element = null;
   if (null != (element = document.querySelector(`${nameIdClass}`))) {
     return element;
-  } else if (null != (element = document.querySelector(`#${nameIdClass}`))) {
+  }
+  if (null != (element = document.querySelector(`#${nameIdClass}`))) {
     return element;
-  } else if (null != (element = document.querySelector(`.${nameIdClass}`))) {
+  }
+  if (null != (element = document.querySelector(`.${nameIdClass}`))) {
     return element;
   }
   return null;
@@ -71,6 +73,8 @@ export const size = (arg = null) => {
     }
   }
 };
+
+export const keys = (obj = {}) => (obj != null ? Object.keys(obj) : null);
 
 export const cap = (arg) => {
   let word_split = null,
@@ -162,6 +166,17 @@ export const countChildren = (parent) => {
 export const getLastChild = (parent) => {
   if (null != parent) {
     return parent.lastElementChild;
+  }
+  return null;
+};
+
+export const removeChild = (parent, child) => {
+  parent.removeChild(child);
+};
+
+export const getFirstChild = (parent) => {
+  if (null != parent) {
+    return parent.firstElementChild;
   }
   return null;
 };
