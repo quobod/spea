@@ -121,6 +121,34 @@ if (document.title.toLowerCase().trim() == "dashboard") {
         : "Show Peers";
     }, 450);
   });
+
+  addHandler(elements.settingsLink, "click", () => {
+    log(`\n\tSettings link clicked\n`);
+    prepareSettingsPanel();
+    elements.settings.classList.toggle("show");
+    setTimeout(() => {
+      elements.settingsLink.innerHTML = elements.settings.classList.contains(
+        "show"
+      )
+        ? "Hide Settings"
+        : "Show Settings";
+    }, [400]);
+  });
+
+  addHandler(elements.hideMeCheckbox, "click", (e) => {
+    const checked = e.target.checked;
+    const userId = elements.personalCode.value;
+
+    if (!checked) {
+      elements.settingsIcon.classList.remove("fa-eye-slash");
+      elements.settingsIcon.classList.add("fa-eye");
+    } else {
+      elements.settingsIcon.classList.remove("fa-eye");
+      elements.settingsIcon.classList.add("fa-eye-slash");
+    }
+
+    wss.hideMe({ userId, show: checked });
+  });
 }
 
 addHandler(elements.addEmailButton, "click", () => {
@@ -267,6 +295,39 @@ function preparePeerListPanel() {
       )
         ? "Hide Settings"
         : "Show Settings";
+    }, 450);
+  }
+
+  if (elements.newContactForm.classList.contains("show")) {
+    elements.newContactForm.classList.remove("show");
+    setTimeout(() => {
+      elements.controlPanelLink.innerHTML =
+        elements.newContactForm.classList.contains("show")
+          ? "Hide Contact Panel"
+          : "Show Contact Panel";
+    }, 450);
+  }
+
+  if (elements.controlPanel.classList.contains("show")) {
+    elements.controlPanel.classList.remove("show");
+    setTimeout(() => {
+      elements.controlPanelLink.innerHTML =
+        elements.controlPanel.classList.contains("show")
+          ? "Hide Control Panel"
+          : "Show Control Panel";
+    }, 450);
+  }
+}
+
+function prepareSettingsPanel() {
+  if (elements.peersList.classList.contains("show")) {
+    elements.peersList.classList.remove("show");
+    setTimeout(() => {
+      elements.peersLink.innerHTML = elements.peersList.classList.contains(
+        "show"
+      )
+        ? "Hide Peers"
+        : "Show Peers";
     }, 450);
   }
 
