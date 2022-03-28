@@ -255,6 +255,14 @@ const handleLocalParticipant = (participant) => {
     }
   });
 
+  addClickHandler(stopIcon, (e) => {
+    if (recordIcon.classList.contains("fa-pause")) {
+      recordIcon.classList.remove("fa-pause");
+      recordIcon.classList.add("fa-circle");
+      stopIcon.classList.add("hide");
+    }
+  });
+
   stopIcon.classList.add("hide");
 
   document.title = roomNameInput.value;
