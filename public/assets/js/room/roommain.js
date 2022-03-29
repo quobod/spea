@@ -123,6 +123,10 @@ const handleRemoteParticipants = (participant) => {
     trackPublication.on("subscribed", displayTrack);
   });
 
+  participant.on("disconnected", (p) => {
+    log(`\n\t${p.identity} disconnected`);
+  });
+
   addClickHandler(participantDiv, (e) => {
     console.log(`\n\t${e} was clicked\n`);
   });
@@ -238,11 +242,15 @@ const handleLocalParticipant = (participant) => {
     trackPublication.on("subscribed", displayTrack);
   });
 
-  participant.on("trackStopped", (track) => {
+  participant.on("trackDisabled", (track) => {
     log(`${keys(track)}\n\tDamn track was disabled`);
 
     removeById(track.id);
     removeByName(track.name);
+  });
+
+  participant.on("disconnected", (p) => {
+    log(`\n\t${p.identity} disconnected`);
   });
 
   // listen or unpublish events
