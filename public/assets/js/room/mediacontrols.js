@@ -46,6 +46,7 @@ export const snapPicture = () => {};
 
 function unmuteLocalMicrophone(connected) {
   localMicrophoneMuted = false;
+  log(`\n\tLocal Participant has unmuted microphone`);
   connected.localParticipant.audioTracks.forEach((publication) => {
     publication.track.enable();
   });
@@ -53,6 +54,7 @@ function unmuteLocalMicrophone(connected) {
 }
 
 function muteLocalMicrophone(connected) {
+  log(`\n\tLocal Participant has muted microphone`);
   localMicrophoneMuted = true;
   connected.localParticipant.audioTracks.forEach((publication) => {
     publication.track.disable();
@@ -62,7 +64,7 @@ function muteLocalMicrophone(connected) {
 
 function unmuteLocalVideoDevice(connected) {
   localCameraMuted = false;
-
+  log(`\n\tLocal Participant has unmuted video`);
   connected.localParticipant.videoTracks.forEach((publication) => {
     publication.track.enable();
   });
