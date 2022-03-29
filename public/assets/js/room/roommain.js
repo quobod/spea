@@ -61,6 +61,12 @@ const handleRemoteParticipants = (participant) => {
 
   // Select parent element
   const parent = getElement("remote-parts");
+  const content = newElement("div");
+  const controlsPanel = newElement("div");
+  const controls = newElement("div");
+  const participantParent = newElement("div");
+  const recordIcon = newElement("i");
+  const stopIcon = newElement("i");
 
   // create a div for this participant's tracks
   const participantDiv = newElement("div");
@@ -70,12 +76,26 @@ const handleRemoteParticipants = (participant) => {
 
   // Add styling attributes
   addAttribute(participantDiv, "class", "remote-video cell small-12");
+  addAttribute(recordIcon, "class", "fa-solid fa-circle fa-2x");
+  addAttribute(stopIcon, "class", "fa-solid fa-stop fa-2x");
+  addAttribute(content, "class", "grid-x");
+  addAttribute(controlsPanel, "class", "cell small-12");
+  addAttribute(controlsPanel, "id", "remote-controls-panel");
+  addAttribute(controls, "id", "remote-media-controls-parent");
 
   // Prepare parent for single child
   removeChildren(parent);
 
   // Add element to it's parent
-  appendChild(parent, participantDiv);
+  // appendChild(parent, participantDiv);
+  // appendChild(parent, participantParent);
+  appendChild(participantParent, participantDiv);
+  appendChild(parent, content);
+  appendChild(content, participantParent);
+  appendChild(content, controlsPanel);
+  appendChild(controlsPanel, controls);
+  appendChild(controls, recordIcon);
+  appendChild(controls, stopIcon);
 
   // iterate through the participant's published tracks and
   // call `handleTrackPublication` on them
@@ -106,6 +126,30 @@ const handleRemoteParticipants = (participant) => {
   addClickHandler(participantDiv, (e) => {
     console.log(`\n\t${e} was clicked\n`);
   });
+
+  addClickHandler(recordIcon, (e) => {
+    const recordingEnabled = recordVideo();
+
+    if (recordingEnabled) {
+      recordIcon.classList.remove("fa-circle");
+      recordIcon.classList.add("fa-pause");
+      stopIcon.classList.remove("hide");
+    } else {
+      recordIcon.classList.remove("fa-pause");
+      recordIcon.classList.add("fa-circle");
+      stopIcon.classList.add("hide");
+    }
+  });
+
+  addClickHandler(stopIcon, (e) => {
+    if (recordIcon.classList.contains("fa-pause")) {
+      recordIcon.classList.remove("fa-pause");
+      recordIcon.classList.add("fa-circle");
+      stopIcon.classList.add("hide");
+    }
+  });
+
+  stopIcon.classList.add("hide");
 };
 
 const handleLocalParticipant = (participant) => {
@@ -147,7 +191,7 @@ const handleLocalParticipant = (participant) => {
   removeChildren(parent);
 
   // Add element to it's parent
-  appendChild(parent, participantParent);
+  // appendChild(parent, participantParent);
   appendChild(participantParent, participantDiv);
   appendChild(parent, content);
   appendChild(content, participantParent);
