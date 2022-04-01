@@ -14,10 +14,12 @@
 <body>
     {{>menu}}
     {{#if dashboard}}
-    {{>peerlist}}
-    {{>settings}}
-    {{>controlpanel}}
     {{>contactform}}
+    {{>searchform}}
+    {{/if}}
+    {{#if room}}
+    {{>settings}}
+    {{>peerlist}}
     {{/if}}
     {{>messages}}
 

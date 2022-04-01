@@ -205,9 +205,27 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const user = userManager.getUser(socket.id);
 
+    console.log(`\n\tUser disconnected:\t${socket.id}`);
+
     if (user) {
       console.log(`\n\tUser ${user.fname} ${user.lname} disconnected`);
-      userManager.removeUserById(socket.id);
+    }
+
+    userManager.removeUserBySocketId(socket.id);
+
+    io.emit("updateuserlist", userManager.getUsers());
+    logPeers();
+  });
+
+  socket.on(`disconnectme`, (data) => {
+    const { rmtUser } = data;
+
+    const user = userManager.getUser(rmtUser);
+    console.log(`Socket ${socket.id} disconnected`);
+
+    if (user != null) {
+      console.log(`\n\tUser ${user.fname} ${user.lname} disconnected`);
+      userManager.removeUserBySocketId(socket.id);
     }
 
     io.emit("updateuserlist", userManager.getUsers());
@@ -301,6 +319,21 @@ io.on("connection", (socket) => {
       );
     }
   });
+
+  socket.on("participant", (data) => {
+    const { rmtId, participantIdentity } = data;
+    const user = userManager.getUser(rmtId);
+
+    log(`\n\tSocket IO event participant evoked`);
+
+    log(user);
+
+    if (user) {
+      log(`\n\tReceived participant identity`);
+      user.participantIdentity = participantIdentity;
+      log(user);
+    }
+  });
 });
 
 server.listen(PORT, () => {
@@ -327,8 +360,8 @@ async function registerMe(userData, done) {
     .then((user) => {
       const res = user.withoutPassword();
       const results = userManager.addUser({
-        socketId,
-        rmtId,
+        socketId: `${socketId}`,
+        rmtId: `${rmtId}`,
         fname: user.fname,
         lname: user.lname,
         email: user.email,

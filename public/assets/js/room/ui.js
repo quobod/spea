@@ -1,6 +1,6 @@
-import * as constants from "./constants.js";
-import * as elements from "./dashboardelements.js";
-import * as utils from "./utils.js";
+import * as constants from "../constants.js";
+import * as elements from "./roomelements.js";
+import * as utils from "../utils.js";
 import {
   removeChildren,
   newElement,
@@ -8,7 +8,7 @@ import {
   addAttribute,
   appendChild,
   getElement,
-} from "./utils.js";
+} from "../utils.js";
 
 // ui helper functions
 

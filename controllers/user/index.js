@@ -95,11 +95,11 @@ export const userDashboard = asyncHandler(async (req, res) => {
   }
 });
 
-//  @desc           User Chat
-//  @route          GET /user/chat
+//  @desc           User Room
+//  @route          GET /user/room
 //  @access         Private
 export const userChat = asyncHandler(async (req, res) => {
-  logger.info(`GET: /user/chat`);
+  logger.info(`GET: /user/room`);
 
   try {
     const user = req.user.withoutPassword();
@@ -108,8 +108,9 @@ export const userChat = asyncHandler(async (req, res) => {
 
     res.render("user/room", {
       title: "Chat",
-      user: user,
+      rmtId: user._id,
       room: true,
+      user: true,
     });
   } catch (err) {
     console.log(err);
@@ -481,6 +482,7 @@ export const joinRoom = asyncHandler(async (req, res) => {
       res.render("user/room", {
         title: "Chat",
         user: user,
+        rmtId: user._id,
         room: true,
         hasToken: true,
         token,

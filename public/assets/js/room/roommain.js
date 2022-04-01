@@ -12,8 +12,19 @@ import {
   stringify,
   keys,
 } from "../utils.js";
-
+import { updateSocketUser, registerSocketEvents, hideMe } from "./wss.js";
+import * as elements from "./roomelements.js";
 import { muteMicrophone, muteCamera, recordVideo } from "./mediacontrols.js";
+
+// init socket connection
+const socket = io("/");
+
+const start = () => {
+  console.log(`\n\t\tLanded on the room view\n`);
+  registerSocketEvents(socket);
+};
+
+start();
 
 // Click Handlers
 
@@ -24,6 +35,7 @@ const addClickHandler = (element, handler) => {
 // Elements
 const roomNameInput = document.querySelector("#room-name-input");
 const joinRoomInput = document.querySelector("#join-room-input");
+const rmtIdInput = document.querySelector("#rmtid-input");
 const localVideo = document.querySelector("#local-part");
 const remoteVideo = document.querySelector("#remote-parts");
 let connected,
@@ -54,6 +66,22 @@ const handleTrackPublication = (trackPublication, participant) => {
 
   // listen for any new subscriptions to this track publication
   trackPublication.on("subscribed", displayTrack);
+};
+
+const handleDisconnection = (participant) => {
+  log(`\n\t${participant.identity} disconnected`);
+};
+
+const handleDisconnectedParticipant = (participant) => {
+  // stop listening for this participant
+  participant.removeAllListeners();
+  // remove this participant's div from the page
+  const participantDiv = document.getElementById(participant.identity);
+  removeById(participant.id);
+  if (participantDiv.parentElement.nextElementSibling) {
+    participantDiv.parentElement.nextElementSibling.remove();
+  }
+  participantDiv.remove();
 };
 
 const handleRemoteParticipants = (participant) => {
@@ -123,9 +151,7 @@ const handleRemoteParticipants = (participant) => {
     trackPublication.on("subscribed", displayTrack);
   });
 
-  participant.on("disconnected", (p) => {
-    log(`\n\t${p.identity} disconnected`);
-  });
+  participant.on("disconnected", handleDisconnection);
 
   addClickHandler(participantDiv, (e) => {
     console.log(`\n\t${e} was clicked\n`);
@@ -228,13 +254,23 @@ const handleLocalParticipant = (participant) => {
     if (trackPublication.track) {
       displayTrack(trackPublication.track);
 
+      /*  TODO:
+            Check if participant ID is already added to the mediaTracks array
+      */
+
       const newObj = {
-        pSID: participant.id,
-        ...trackPublication.track,
+        participantID: participant.id,
+        track: {
+          kind: trackPublication.track.kind,
+          id: trackPublication.track.id,
+          sid: trackPublication.track.sid,
+          trackPublicationName: trackPublication.trackName,
+          trackPublicationID: trackPublication.trackSid,
+        },
       };
 
       if (addTrack(newObj)) {
-        log(`\n\tAdded Track: ${stringify(mediaTracks)}`);
+        log(`\n\tAdded Published Track: ${stringify(newObj)}`);
       }
     }
 
@@ -243,10 +279,11 @@ const handleLocalParticipant = (participant) => {
   });
 
   participant.on("trackDisabled", (track) => {
-    log(`${keys(track)}\n\tDamn track was disabled`);
-
-    removeById(track.id);
-    removeByName(track.name);
+    log(
+      `${keys(track)}\n\tParticipant ${participant.id} disabled track ${
+        track.kind
+      }:\tSID: ${track.sid}`
+    );
   });
 
   participant.on("disconnected", (p) => {
@@ -320,18 +357,6 @@ const handleLocalParticipant = (participant) => {
   document.title = roomNameInput.value;
 };
 
-const handleDisconnectedParticipant = (participant) => {
-  // stop listening for this participant
-  participant.removeAllListeners();
-  // remove this participant's div from the page
-  const participantDiv = document.getElementById(participant.identity);
-  removeById(participant.id);
-  if (participantDiv.parentElement.nextElementSibling) {
-    participantDiv.parentElement.nextElementSibling.remove();
-  }
-  participantDiv.remove();
-};
-
 const startRoom = () => {
   if (roomNameInput && joinRoomInput) {
     const roomName = roomNameInput.value;
@@ -350,6 +375,14 @@ const startRoom = () => {
         room.on("participantDisconnected", handleDisconnectedParticipant);
         window.addEventListener("pagehide", () => room.disconnect());
         window.addEventListener("beforeunload", () => room.disconnect());
+
+        log(`\n\tRMT User ID: ${rmtIdInput.value}`);
+
+        updateSocketUser({
+          rmtId: rmtIdInput.value,
+          participantIdentity: room.localParticipant.identity,
+          type: "local",
+        });
       })
       .catch((err) => {
         log(err);
@@ -399,4 +432,131 @@ function removeById(id) {
 function removeByName(name) {
   mediaTracks = mediaTracks.filter((m) => m.name !== name || m.pSID == name);
   log(`\n\tRemoved track by Name: ${stringify(mediaTracks)}`);
+}
+
+// Click Handlers
+
+addHandler(elements.hideCheckbox, "click", (e) => {
+  const target = e.target;
+  const socketId = elements.personalCode.value;
+  if (target.checked) {
+    log(`\n\tHide checkbox is checked`);
+  } else {
+    log(`\n\tHide checkbox is unchecked`);
+  }
+  wss.hideMe({ userId: socketId, show: target.checked });
+});
+
+addHandler(elements.hideMeCheckbox, "click", (e) => {
+  const checked = e.target.checked;
+  const userId = elements.personalCode.value;
+
+  if (!checked) {
+    elements.settingsIcon.classList.remove("fa-eye-slash");
+    elements.settingsIcon.classList.add("fa-eye");
+  } else {
+    elements.settingsIcon.classList.remove("fa-eye");
+    elements.settingsIcon.classList.add("fa-eye-slash");
+  }
+
+  hideMe({ userId, show: checked });
+});
+
+addHandler(elements.peersLink, "click", () => {
+  log(`\n\tPeers link clicked\n`);
+  preparePeerListPanel();
+  elements.peersList.classList.toggle("show");
+  setTimeout(() => {
+    elements.peersLink.innerHTML = elements.peersList.classList.contains("show")
+      ? "Hide Peers"
+      : "Show Peers";
+  }, 450);
+});
+
+addHandler(elements.showPresenceInput, "click", (e) => {
+  const target = e.target;
+  elements.showPresence.innerHTML = target.checked ? "Hidden" : "Visible";
+
+  socket.emit("changevisibility", {
+    userId: socket.id,
+    show: target.checked,
+  });
+});
+
+addHandler(elements.controlPanelLink, "click", () => {
+  prepareControlPanelLink();
+
+  elements.controlPanel.classList.toggle("show");
+  setTimeout(() => {
+    elements.controlPanelLink.innerHTML =
+      elements.controlPanel.classList.contains("show")
+        ? "Hide Search"
+        : "Show Search";
+  }, 450);
+});
+
+addHandler(elements.settingsLink, "click", () => {
+  log(`\n\tSettings link clicked\n`);
+  prepareSettingsPanel();
+  elements.settings.classList.toggle("show");
+  setTimeout(() => {
+    elements.settingsLink.innerHTML = elements.settings.classList.contains(
+      "show"
+    )
+      ? "Hide Settings"
+      : "Show Settings";
+  }, [400]);
+});
+
+// Helpers
+
+function prepareControlPanelLink() {
+  if (elements.peersList.classList.contains("show")) {
+    elements.peersList.classList.remove("show");
+    setTimeout(() => {
+      elements.peersLink.innerHTML = elements.peersList.classList.contains(
+        "show"
+      )
+        ? "Hide Peers"
+        : "Show Peers";
+    }, 450);
+  }
+}
+
+function preparePeerListPanel() {
+  log(`\n\tDone\n`);
+
+  if (elements.controlPanel.classList.contains("show")) {
+    elements.controlPanel.classList.remove("show");
+    setTimeout(() => {
+      elements.controlPanelLink.innerHTML =
+        elements.controlPanel.classList.contains("show")
+          ? "Hide Control Panel"
+          : "Show Control Panel";
+    }, 450);
+  }
+
+  if (elements.settings.classList.contains("show")) {
+    elements.settings.classList.remove("show");
+    setTimeout(() => {
+      elements.settingsLink.innerHTML = elements.settings.classList.contains(
+        "show"
+      )
+        ? "Hide Settings"
+        : "Show Settings";
+    }, 450);
+  }
+}
+
+function prepareSettingsPanel() {
+  if (elements.peersList.classList.contains("show")) {
+    elements.peersList.classList.remove("show");
+    setTimeout(() => {
+      elements.peersLink.innerHTML = elements.peersList.classList.contains(
+        "show"
+      )
+        ? "Hide Peers"
+        : "Show Peers";
+    }, 450);
+  }
 }

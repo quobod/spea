@@ -1,6 +1,7 @@
 import * as store from "./store.js";
-import * as elements from "./dashboardelements.js";
+import * as elements from "./roomelements.js";
 import * as ui from "./ui.js";
+import { cls, log, stringify, parse } from "../utils.js";
 
 let socketIO = null;
 
@@ -24,11 +25,11 @@ export const registerSocketEvents = (socket) => {
     ui.updateUserList(data);
   });
 
-  if (elements.rmtUser) {
+  if (elements.rmtIdInput) {
     setTimeout(() => {
       socket.emit("registerme", {
         socketId: socket.id,
-        rmtId: elements.rmtUser.value,
+        rmtId: elements.rmtIdInput.value,
       });
     }, 1200);
   }
@@ -38,5 +39,12 @@ export const hideMe = (data = null) => {
   console.log(`\n\thideMe method invoked\n`);
   if (data) {
     socketIO.emit("changevisibility", data);
+  }
+};
+
+export const updateSocketUser = (data = null) => {
+  if (null != data) {
+    log(`\n\tUpdate dating socket user store with ${stringify(data)}\n`);
+    socketIO.emit("participant", data);
   }
 };

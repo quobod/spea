@@ -1,4 +1,4 @@
-import { log, cls, cap } from "./utils.js";
+import { log, cls, cap } from "../utils.js";
 
 let contacts = {},
   socket = {};
@@ -6,8 +6,15 @@ let contacts = {},
 // Socket
 
 export const setSocketId = (sid) => {
-  socket.id = sid;
-  log(`\n\tsetSocketId method received a new socket ID: ${sid}`);
+  if ("id" in socket) {
+    if (socket.id === sid) {
+      log(`\n\tSocket already registered: ${sid}`);
+      return;
+    } else {
+      socket.id = sid;
+      log(`\n\tsetSocketId method received a new socket ID: ${sid}`);
+    }
+  }
 };
 
 // Contacts

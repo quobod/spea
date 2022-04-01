@@ -13,17 +13,13 @@ export const dialog = document.querySelector("#dialog");
 
 // Partials
 export const newContactForm = document.querySelector("#new-contact-form");
-export const controlPanel = document.querySelector("#control-panel");
 
-// Signed In Menu
-export const showPresenceInput = document.querySelector("#show-presence-input");
-export const showPresence = document.querySelector("#show-presence");
+// Page Links
 export const newContactLink = document.querySelector("#new-contact-link");
-export const controlPanelLink = document.querySelector("#control-panel-link");
+export const searchLink = document.querySelector("#search-form-link");
 
 // Dashboard
 export const searchInput = document.querySelector("#search-input");
-export const hideCheckbox = document.querySelector("#hide-checkbox");
 export const personalCode = document.querySelector("#personal-code");
 
 // New contact form
@@ -47,12 +43,5 @@ export const editProfileForm = document.querySelector("#edit-profile-form");
 // Messages
 export const closeButton = document.querySelector(".close-button");
 
-// Peers
-export const peersList = document.querySelector("#peers-list");
-export const peersLink = document.querySelector("#peers-list-link");
-
-// Settings
-export const settings = document.querySelector("#settings");
-export const settingsLink = document.querySelector("#settings-link");
-export const settingsIcon = document.querySelector("#settings-icon");
-export const hideMeCheckbox = document.querySelector("#hide-me-checkbox");
+// Room elements
+export const rmtIdInput = document.querySelector("#rmtid-input");

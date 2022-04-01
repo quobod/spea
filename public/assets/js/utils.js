@@ -21,6 +21,12 @@ export const addHandler = (theElement, whichEvent, method) => {
   }
 };
 
+export const addClickHandler = (theElement, handler) => {
+  if (null != theElement && typeof handler == "function") {
+    addHandler(theElement, "click", handler);
+  }
+};
+
 export const addAttribute = (theElement, whichAttribute, attributeValue) => {
   if (null != theElement) {
     theElement.setAttribute(whichAttribute, attributeValue);

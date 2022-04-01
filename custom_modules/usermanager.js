@@ -4,7 +4,8 @@ let users = [];
 
 const log = (arg = "") => console.log(arg);
 
-const getUserById = (uid) => users.find((u) => u.uid === uid) || null;
+const getUserById = (uid) =>
+  users.find((u) => u.uid === uid || u.rmtId === uid) || null;
 
 export const addUser = (data) => {
   const { socketId, fname, lname, email, rmtId } = data;
@@ -19,17 +20,17 @@ export const addUser = (data) => {
   }
 };
 
-export const removeUserById = (uid) => {
-  const userIndex = users.findIndex((u) => u.uid === uid);
-  if (userIndex != -1) {
-    users = users.filter((u) => u.uid !== uid);
-    log(`\n\tRemoved user ${uid}`);
-  }
+export const removeUserBySocketId = (uid) => {
+  users = users.filter((u) => u.uid !== uid);
+};
+
+export const removeUserRmtId = (uid) => {
+  users = users.filter((u) => u.rmtId !== uid);
 };
 
 export const updateUser = (uid, objArg) => {
   if (null != objArg && typeof objArg === "object") {
-    const userIndex = users.findIndex((u) => u.uid === uid);
+    const userIndex = users.findIndex((u) => u.uid === uid || u.rmtId === uid);
 
     if (userIndex != -1) {
       let user = users[userIndex];
