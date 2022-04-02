@@ -79,6 +79,7 @@ addHandler(elements.contactPhone, "keyup", (e) => {
 
 if (document.title.toLowerCase().trim() == "dashboard") {
   addHandler(elements.newContactLink, "click", () => {
+    log(`\n\tNew Contact link clicked\n`);
     prepareNewContactLink();
 
     elements.newContactForm.classList.toggle("show");
@@ -86,6 +87,13 @@ if (document.title.toLowerCase().trim() == "dashboard") {
 
   addClickHandler(elements.searchLink, (e) => {
     log(`\n\tSearch link clicked\n`);
+    prepareSearchLink();
+    elements.searchForm.classList.toggle("show");
+    elements.searchLink.innerHTML = elements.searchForm.classList.contains(
+      "show"
+    )
+      ? "Hide Search"
+      : "Show Search";
   });
 }
 
@@ -180,26 +188,21 @@ addHandler(elements.addPhoneButton, "click", () => {
 // Helper functions
 function prepareNewContactLink() {
   log(`\n\tNew contact link prepared\n`);
-  if (elements.controlPanel.classList.contains("show")) {
-    elements.controlPanel.classList.remove("show");
-    setTimeout(() => {
-      elements.controlPanelLink.innerHTML =
-        elements.controlPanel.classList.contains("show")
-          ? "Hide Control Panel"
-          : "Show Control Panel";
-    }, 450);
-  }
 
-  /*  if (elements.peersList.classList.contains("show")) {
-    elements.peersList.classList.remove("show");
-    setTimeout(() => {
-      elements.peersLink.innerHTML = elements.peersList.classList.contains(
-        "show"
-      )
-        ? "Hide Peers"
-        : "Show Peers";
-    }, 450);
-  } */
+  if (elements.searchForm.classList.contains("show")) {
+    elements.searchForm.classList.remove("show");
+    elements.searchLink.innerHTML = elements.searchForm.classList.contains(
+      "show"
+    )
+      ? "Hide Search"
+      : "Show Search";
+  }
+}
+
+function prepareSearchLink() {
+  if (elements.newContactForm.classList.contains("show")) {
+    elements.newContactForm.classList.remove("show");
+  }
 }
 
 // Messages

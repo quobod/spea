@@ -10,6 +10,7 @@ import {
   appendChild,
   removeChildren,
   stringify,
+  addClickHandler,
   keys,
 } from "../utils.js";
 import { updateSocketUser, registerSocketEvents, hideMe } from "./wss.js";
@@ -25,12 +26,6 @@ const start = () => {
 };
 
 start();
-
-// Click Handlers
-
-const addClickHandler = (element, handler) => {
-  addHandler(element, "click", handler);
-};
 
 // Elements
 const roomNameInput = document.querySelector("#room-name-input");
@@ -525,16 +520,6 @@ function prepareControlPanelLink() {
 
 function preparePeerListPanel() {
   log(`\n\tDone\n`);
-
-  if (elements.controlPanel.classList.contains("show")) {
-    elements.controlPanel.classList.remove("show");
-    setTimeout(() => {
-      elements.controlPanelLink.innerHTML =
-        elements.controlPanel.classList.contains("show")
-          ? "Hide Control Panel"
-          : "Show Control Panel";
-    }, 450);
-  }
 
   if (elements.settings.classList.contains("show")) {
     elements.settings.classList.remove("show");

@@ -13,6 +13,7 @@ export const dialog = document.querySelector("#dialog");
 
 // Partials
 export const newContactForm = document.querySelector("#new-contact-form");
+export const searchForm = document.querySelector("#search-form");
 
 // Page Links
 export const newContactLink = document.querySelector("#new-contact-link");
@@ -45,3 +46,5 @@ export const closeButton = document.querySelector(".close-button");
 
 // Room elements
 export const rmtIdInput = document.querySelector("#rmtid-input");
+export const controlPanel = document.querySelector("#control-panel");
+export const controlPanelLink = document.querySelector("#control-panel-link");

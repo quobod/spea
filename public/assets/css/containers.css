@@ -13,3 +13,12 @@
 #personal-code-parent {
   top: 0;
 }
+
+#search-form {
+  transform: translate3d(0, -300%, 0);
+  transition: transform 0.6s;
+}
+
+#search-form.show {
+  transform: translate3d(0, 0, 0);
+}

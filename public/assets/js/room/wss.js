@@ -10,9 +10,9 @@ export const registerSocketEvents = (socket) => {
 
   socket.on("connect", () => {
     store.setSocketId(socket.id);
-    if (elements.personalCode) {
-      ui.updatePersonalCode(socket.id);
-    }
+    elements.personalCode.value = socket.id;
+    ui.updatePersonalCode(socket.id);
+
     console.log(
       `\n\tSuccessfully connected to socket.io server\n\tReceived personal code: ${
         store.getState().id
