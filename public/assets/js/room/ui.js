@@ -28,21 +28,45 @@ export const updateUserList = (data) => {
       if (!item.hide) {
         const divPanel = newElement("div");
         const button = newElement("button");
-        const divContent = newElement("div");
+        const divDetails = newElement("div");
+        const divControls = newElement("div");
         const pFname = newElement("p");
         const pLname = newElement("p");
         const pEmail = newElement("p");
+        const videoIcon = newElement("i");
+        const chatIcon = newElement("i");
 
         appendChild(userList, button);
         appendChild(userList, divPanel);
-        appendChild(divPanel, divContent);
-        appendChild(divContent, pFname);
-        appendChild(divContent, pLname);
-        appendChild(divContent, pEmail);
+        appendChild(divPanel, divDetails);
+        appendChild(divControls, videoIcon);
+        appendChild(divControls, chatIcon);
+        appendChild(divDetails, pFname);
+        appendChild(divDetails, pLname);
+        appendChild(divDetails, pEmail);
+        appendChild(divControls, videoIcon);
+        appendChild(divControls, chatIcon);
 
-        addAttribute(divPanel, "class", "panel");
-        addAttribute(divPanel, "style", "z-index: 101;background:transparent;");
-        addAttribute(button, "class", "accordion");
+        addAttribute(divPanel, "class", "grid-x panel");
+        addAttribute(divPanel, "style", "z-index: 101;");
+        addAttribute(divControls, "class", "cell small-12");
+        addAttribute(divControls, "id", "peer-list-controls");
+        addAttribute(divControls, "style", "z-index:102;");
+        addAttribute(divDetails, "class", "cell small-12 grid-x");
+        addAttribute(
+          divDetails,
+          "style",
+          "margin-left: 5px; margin-right: 5px;"
+        );
+        addAttribute(pFname, "class", "cell small-12 text-center");
+        addAttribute(pLname, "class", "cell small-12 text-center");
+        addAttribute(pEmail, "class", "cell small-12 text-center");
+        addAttribute(pFname, "style", "margin:0;");
+        addAttribute(pLname, "style", "margin:0;");
+        addAttribute(pEmail, "style", "margin:0;");
+        addAttribute(button, "class", "button");
+        addAttribute(videoIcon, "class", "fa-solid fa-camera fa-fw fa-2x");
+        addAttribute(chatIcon, "class", "fa-solid fa-comments fa-fw fa-2x");
         // addAttribute(divContent, "class", "cell small-12");
 
         button.innerHTML = `${item.fname} ${item.lname}`;
@@ -61,17 +85,7 @@ export const updateUserList = (data) => {
         });
 
         if (item.uid != personalCode) {
-          const callButton = newElement("button");
-          appendChild(divContent, callButton);
-          addAttribute(callButton, "class", "button primary");
-          addAttribute(callButton, "id", `${item.uid}`);
-          callButton.innerHTML = `Call`;
-
-          addHandler(callButton, "click", (e) => {
-            const target = e.target;
-            console.log(`Target ID: ${target.id}`);
-            elements.personalCodeInput.value = `${target.id}`;
-          });
+          appendChild(divPanel, divControls);
         }
       }
     });
