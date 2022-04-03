@@ -477,7 +477,7 @@ export const joinRoom = asyncHandler(async (req, res) => {
     const token = getAccessToken(roomName);
 
     if (token) {
-      console.log(`\n\tToken Success: ${token}\n`);
+      // console.log(`\n\tToken Success: ${token}\n`);
 
       res.render("user/room", {
         title: "Chat",

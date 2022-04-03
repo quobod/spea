@@ -177,11 +177,11 @@ const io = new Server(server);
 io.on("connection", (socket) => {
   socket.on("registerme", (data) => {
     const { socketId, rmtId } = data;
-    log(
+    /*   log(
       `\nsocket server received user data: ${stringify(
         data
       )}\nNow calling registerMe method.\n`
-    );
+    ); */
     registerMe(data, (results) => {
       if (results.status) {
         io.emit("updateuserlist", results.userlist);
@@ -239,23 +239,6 @@ io.on("connection", (socket) => {
     log(`\n\tParticipant ${rmtUser} disconnected\n`);
 
     log(`\n\tUser Count: ${userManager.getUserCount()}\n`);
-  });
-
-  socket.on("userhungup", (data) => {
-    const { connectedUserSocketId, currentCallee } = data;
-    log(`\n\tHungup data`);
-    log(data);
-    log(`\n\t`);
-    const connectedPeer = userManager.getUser(connectedUserSocketId);
-    const calleePeer = userManager.getUser(currentCallee);
-
-    if (connectedPeer) {
-      log(`\n\tCaller ${stringify(connectedPeer)} hungup call`);
-      // io.to(socket.id).emit("userhungup");
-      io.to(connectedPeer).emit("userhungup");
-    }
-
-    io.to(currentCallee).emit("userhungup");
   });
 
   socket.on("participant", (data) => {
