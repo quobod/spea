@@ -205,13 +205,13 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const user = userManager.getUser(socket.id);
 
-    console.log(`\n\tUser disconnected:\t${socket.id}`);
-
     if (user) {
       console.log(`\n\tUser ${user.fname} ${user.lname} disconnected`);
+      userManager.removeUserBySocketId(user.uid);
+    } else {
+      console.log(`\n\tUser disconnected:\t${socket.id}`);
+      userManager.removeUserBySocketId(socket.id);
     }
-
-    userManager.removeUserBySocketId(socket.id);
 
     io.emit("updateuserlist", userManager.getUsers());
     logPeers();
@@ -232,55 +232,13 @@ io.on("connection", (socket) => {
     logPeers();
   });
 
-  socket.on("preoffer", (data) => {
-    const { calleePersonalCode, callType } = data;
+  socket.on("participantdisconnected", (data) => {
+    const { rmtUser } = data;
+    const user = userManager.getUser(rmtUser);
 
-    const callerConnectedPeer = userManager.getUser(socket.id);
-    const calleeConnectedPeer = userManager.getUser(calleePersonalCode);
+    log(`\n\tParticipant ${rmtUser} disconnected\n`);
 
-    const caller = {
-      fname: callerConnectedPeer.fname,
-      lname: callerConnectedPeer.lname,
-      email: callerConnectedPeer.email,
-    };
-
-    if (callerConnectedPeer) {
-      const data = {
-        callerSocketId: socket.id,
-        caller,
-        callType,
-      };
-
-      console.log(
-        `\n\tPreoffer sent by ${callerConnectedPeer.fname} ${
-          callerConnectedPeer.lname
-        } to ${calleeConnectedPeer.fname} ${
-          calleeConnectedPeer.lname
-        }\n\tData:\t${JSON.stringify(data)}`
-      );
-
-      io.to(calleePersonalCode).emit("preoffer", data);
-    } else {
-      const data = { preOfferAnswer: "CALLEE_NOT_FOUND" };
-      io.to(socket.id).emit("preofferanswer", data);
-    }
-  });
-
-  socket.on("preofferanswer", (data) => {
-    console.log(`\n\tPre offer answer came\n\tData: ${JSON.stringify(data)}`);
-
-    const callee = userManager.getUser(socket.id);
-
-    const { callerSocketId, preOfferAnswer } = data;
-
-    const connectedPeer = userManager.getUser(callerSocketId);
-
-    if (connectedPeer) {
-      data.calleeFname = callee.fname;
-      data.calleeLname = callee.lname;
-      data.calleeEmail = callee.email;
-      io.to(callerSocketId).emit("preofferanswer", data);
-    }
+    log(`\n\tUser Count: ${userManager.getUserCount()}\n`);
   });
 
   socket.on("userhungup", (data) => {
@@ -300,33 +258,11 @@ io.on("connection", (socket) => {
     io.to(currentCallee).emit("userhungup");
   });
 
-  socket.on("webrtcsignaling", (data) => {
-    const { connectedUserSocketId } = data;
-
-    console.log(
-      `\n\tReceived web rtc signaling event from ${socket.id}\n\tSending data to ${connectedUserSocketId}`
-    );
-
-    const connectedPeer = userManager.getUser(connectedUserSocketId);
-
-    if (connectedPeer) {
-      io.to(connectedUserSocketId).emit("webrtcsignaling", data);
-    } else {
-      console.log(
-        `\n\tError within the io server webrtcsignaling event handler\n\tReceived data: ${JSON.stringify(
-          data
-        )}`
-      );
-    }
-  });
-
   socket.on("participant", (data) => {
-    const { rmtId, participantIdentity } = data;
+    const { rmtId, participantIdentity, type } = data;
     const user = userManager.getUser(rmtId);
 
-    log(`\n\tSocket IO event participant evoked`);
-
-    log(user);
+    log(`\n\tSocketIO participant emitter invoked`);
 
     if (user) {
       log(`\n\tReceived participant identity`);

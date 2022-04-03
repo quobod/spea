@@ -48,3 +48,10 @@ export const updateSocketUser = (data = null) => {
     socketIO.emit("participant", data);
   }
 };
+
+export const participantDisconnected = (data = null) => {
+  if (null != data) {
+    log(data);
+    socketIO.emit("participantdisconnected", data);
+  }
+};

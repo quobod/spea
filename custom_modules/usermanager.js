@@ -5,13 +5,20 @@ let users = [];
 const log = (arg = "") => console.log(arg);
 
 const getUserById = (uid) =>
-  users.find((u) => u.uid === uid || u.rmtId === uid) || null;
+  users.find((u) => u.uid == uid || u.rmtId == uid) || null;
 
 export const addUser = (data) => {
   const { socketId, fname, lname, email, rmtId } = data;
 
   if (getUserById(socketId) == null) {
-    users.push({ uid: socketId, fname, lname, email, rmtId, hide: false });
+    users.push({
+      uid: socketId,
+      fname,
+      lname,
+      email,
+      rmtId: rmtId,
+      hide: false,
+    });
     log(successStatus(`\n\tAdded new user ${socketId}`));
     return true;
   } else {

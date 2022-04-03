@@ -13,7 +13,12 @@ import {
   addClickHandler,
   keys,
 } from "../utils.js";
-import { updateSocketUser, registerSocketEvents, hideMe } from "./wss.js";
+import {
+  updateSocketUser,
+  registerSocketEvents,
+  hideMe,
+  participantDisconnected,
+} from "./wss.js";
 import * as elements from "./roomelements.js";
 import { muteMicrophone, muteCamera, recordVideo } from "./mediacontrols.js";
 
@@ -283,6 +288,7 @@ const handleLocalParticipant = (participant) => {
 
   participant.on("disconnected", (p) => {
     log(`\n\t${p.identity} disconnected`);
+    participantDisconnected({ rmtUser: rmtIdInput.value });
   });
 
   // listen or unpublish events
