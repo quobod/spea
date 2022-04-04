@@ -176,12 +176,9 @@ const io = new Server(server);
 
 io.on("connection", (socket) => {
   socket.on("registerme", (data) => {
-    const { socketId, rmtId } = data;
-    /*   log(
-      `\nsocket server received user data: ${stringify(
-        data
-      )}\nNow calling registerMe method.\n`
-    ); */
+    const { socketId, rmtId, hasCamera } = data;
+    log(`\n\tRegistering: ${socketId}\t${rmtId}\t${hasCamera}\n`);
+
     registerMe(data, (results) => {
       if (results.status) {
         io.emit("updateuserlist", results.userlist);
@@ -273,7 +270,7 @@ function logPeers() {
 }
 
 async function registerMe(userData, done) {
-  const { socketId, rmtId } = userData;
+  const { socketId, rmtId, hasCamera } = userData;
 
   await User.findById(rmtId)
     .then((user) => {
@@ -284,6 +281,7 @@ async function registerMe(userData, done) {
         fname: user.fname,
         lname: user.lname,
         email: user.email,
+        hasCamera: hasCamera,
       });
 
       if (results) {

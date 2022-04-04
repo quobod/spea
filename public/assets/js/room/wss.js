@@ -27,10 +27,19 @@ export const registerSocketEvents = (socket) => {
 
   if (elements.rmtIdInput) {
     setTimeout(() => {
-      socket.emit("registerme", {
+      const data = {
         socketId: socket.id,
         rmtId: elements.rmtIdInput.value,
-      });
+        hasCamera: false,
+      };
+      const mediaDevices = navigator.mediaDevices || null;
+      log(mediaDevices);
+
+      if (mediaDevices != null) {
+        data.hasCamera = true;
+      }
+
+      socket.emit("registerme", data);
     }, 1200);
   }
 };

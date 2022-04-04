@@ -37,3 +37,21 @@ h* {
 #settings.show {
   transform: translate3d(0, 0, 0);
 }
+
+i.fa-solid:first-child {
+  display: inline-block;
+  background-color: rgba(222, 88, 89, 0.5);
+}
+
+i.fa-solid:last-child {
+  display: inline-block;
+  background-color: rgba(33, 116, 179, 0.5);
+}
+
+.fa-solid:hover {
+  cursor: pointer;
+}
+
+.card {
+  border-radius: 10px;
+}

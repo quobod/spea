@@ -8,7 +8,7 @@ const getUserById = (uid) =>
   users.find((u) => u.uid == uid || u.rmtId == uid) || null;
 
 export const addUser = (data) => {
-  const { socketId, fname, lname, email, rmtId } = data;
+  const { socketId, fname, lname, email, rmtId, hasCamera } = data;
 
   if (getUserById(socketId) == null) {
     users.push({
@@ -18,6 +18,7 @@ export const addUser = (data) => {
       email,
       rmtId: rmtId,
       hide: false,
+      hasCamera,
     });
     log(successStatus(`\n\tAdded new user ${socketId}`));
     return true;
