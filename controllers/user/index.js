@@ -73,6 +73,7 @@ export const userDashboard = asyncHandler(async (req, res) => {
       rmtId: user._id,
       dashboard: true,
       user: true,
+      fname: user.fname,
     });
   } catch (err) {
     console.log(err);
