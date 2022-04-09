@@ -1,9 +1,18 @@
 import * as store from "./store.js";
 import * as elements from "./roomelements.js";
 import * as ui from "./ui.js";
-import { cls, log, stringify, parse } from "../utils.js";
+import {
+  cls,
+  log,
+  stringify,
+  parse,
+  removeChildren,
+  getElement,
+  appendChild,
+} from "../utils.js";
 
-let socketIO = null;
+let socketIO = null,
+  userDetails = {};
 
 export const registerSocketEvents = (socket) => {
   socketIO = socket;
@@ -25,23 +34,33 @@ export const registerSocketEvents = (socket) => {
     ui.updateUserList(data);
   });
 
-  if (elements.rmtIdInput) {
-    setTimeout(() => {
-      const data = {
-        socketId: socket.id,
-        rmtId: elements.rmtIdInput.value,
-        hasCamera: false,
-      };
-      const mediaDevices = navigator.mediaDevices || null;
-      log(mediaDevices);
+  socket.on("chatrequest", (data) => {
+    log(`\n\tChat request data ${stringify(data)}\n`);
 
-      if (mediaDevices != null) {
-        data.hasCamera = true;
-      }
+    userDetails = {
+      sender: data.sender.uid,
+      receiver: socketIO.id,
+    };
 
-      socket.emit("registerme", data);
-    }, 1200);
-  }
+    const callout = ui.createChatRequestCallout(
+      data,
+      handleChatAccept,
+      handleChatReject,
+      handleChatRequestNoResponse
+    );
+
+    removeChildren(getElement("callout-parent"));
+    appendChild(getElement("callout-parent"), callout);
+  });
+
+  socket.on("chatrequested", (data) => {
+    log(`\n\tRequested chat ${stringify(data)}`);
+    const callout = ui.chatRequestStatus(data);
+    removeChildren(getElement("callout-parent"));
+    appendChild(getElement("callout-parent"), callout);
+  });
+
+  requestRegistration(socket);
 };
 
 export const hideMe = (data = null) => {
@@ -63,4 +82,54 @@ export const participantDisconnected = (data = null) => {
     log(data);
     socketIO.emit("participantdisconnected", data);
   }
+};
+
+export const requestChat = (data) => {
+  log(`\n\tChat Request\n\t\t${stringify(data)}`);
+  socketIO.emit("sendchatrequest", data);
+};
+
+function requestRegistration(socket) {
+  if (elements.rmtIdInput) {
+    setTimeout(() => {
+      const data = {
+        socketId: socket.id,
+        rmtId: elements.rmtIdInput.value,
+        hasCamera: false,
+      };
+      const mediaDevices = navigator.mediaDevices || null;
+      // log(mediaDevices);
+      if (mediaDevices != null) {
+        data.hasCamera = true;
+      }
+
+      socket.emit("registerme", data);
+    }, 1200);
+  }
+}
+
+const handleChatAccept = () => {
+  userDetails = {
+    from: userDetails.receiver,
+    to: userDetails.sender,
+    response: "accept",
+  };
+  socketIO.emit("chataccepted", userDetails);
+  removeChildren(getElement("callout-parent"));
+};
+
+const handleChatReject = () => {
+  userDetails = {
+    from: userDetails.receiver,
+    to: userDetails.sender,
+    response: "reject",
+  };
+  socketIO.emit("chatrejected", userDetails);
+  removeChildren(getElement("callout-parent"));
+};
+
+const handleChatRequestNoResponse = () => {
+  userDetails = { from: userDetails.receiver, to: userDetails.sender };
+  socketIO.emit("chatrequestnoresponse", userDetails);
+  removeChildren(getElement("callout-parent"));
 };

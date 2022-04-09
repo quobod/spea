@@ -70,6 +70,7 @@ const handleTrackPublication = (trackPublication, participant) => {
 
 const handleDisconnection = (participant) => {
   log(`\n\t${participant.identity} disconnected`);
+  participantDisconnected({ rmtUser: rmtIdInput.value });
 };
 
 const handleDisconnectedParticipant = (participant) => {
@@ -437,51 +438,8 @@ function removeByName(name) {
 
 // Click Handlers
 
-addHandler(elements.hideCheckbox, "click", (e) => {
-  const target = e.target;
-  const socketId = elements.personalCode.value;
-  if (target.checked) {
-    log(`\n\tHide checkbox is checked`);
-  } else {
-    log(`\n\tHide checkbox is unchecked`);
-  }
-  wss.hideMe({ userId: socketId, show: target.checked });
-});
-
 addHandler(elements.hideMeCheckbox, "click", (e) => {
-  const checked = e.target.checked;
-  const userId = elements.personalCode.value;
-
-  if (!checked) {
-    elements.settingsIcon.classList.remove("fa-eye-slash");
-    elements.settingsIcon.classList.add("fa-eye");
-  } else {
-    elements.settingsIcon.classList.remove("fa-eye");
-    elements.settingsIcon.classList.add("fa-eye-slash");
-  }
-
-  hideMe({ userId, show: checked });
-});
-
-addHandler(elements.peersLink, "click", () => {
-  log(`\n\tPeers link clicked\n`);
-  preparePeerListPanel();
-  elements.peersList.classList.toggle("show");
-  setTimeout(() => {
-    elements.peersLink.innerHTML = elements.peersList.classList.contains("show")
-      ? "Hide Peers"
-      : "Show Peers";
-  }, 450);
-});
-
-addHandler(elements.showPresenceInput, "click", (e) => {
-  const target = e.target;
-  elements.showPresence.innerHTML = target.checked ? "Hidden" : "Visible";
-
-  socket.emit("changevisibility", {
-    userId: socket.id,
-    show: target.checked,
-  });
+  hideMe({ userId: rmtIdInput.value, show: e.target.checked });
 });
 
 addHandler(elements.controlPanelLink, "click", () => {
@@ -494,19 +452,6 @@ addHandler(elements.controlPanelLink, "click", () => {
         ? "Hide Search"
         : "Show Search";
   }, 450);
-});
-
-addHandler(elements.settingsLink, "click", () => {
-  log(`\n\tSettings link clicked\n`);
-  prepareSettingsPanel();
-  elements.settings.classList.toggle("show");
-  setTimeout(() => {
-    elements.settingsLink.innerHTML = elements.settings.classList.contains(
-      "show"
-    )
-      ? "Hide Settings"
-      : "Show Settings";
-  }, [400]);
 });
 
 // Helpers

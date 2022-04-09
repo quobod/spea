@@ -1,0 +1,83 @@
+<div class="main-container grid-container fluid">
+    <div class="grid-x grid-padding-y grid-padding-x">
+        <div class="cell small-12">
+            {{>searchform}}
+        </div>
+
+        {{#if error}}
+        <div class="cell small-12">
+            <div class="grid-container" style="align-items: stretch;flow-direction:row;margin:0;padding:15px;">
+                {{#each errors}}
+                {{#each . as |key value|}}
+                <p class="cell small-12 lead" style="margin:0;">{{key}}</p>
+                {{/each}}
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+
+        {{#if hasContacts}}
+        <div class="cell small-12 medium-6">
+            <div class="dashboard-container grid-x grid-margin-y grid-margin-x fluid align-middle"
+                style="margin:10px 0px;">
+                <div class="cell small-12">
+                    <div class="card" style="border-radius:15px;">
+                        <div class="grid-x grid-margin-y">
+                            {{#each contacts}}
+                            <div class="cell small-12"
+                                style="margin: 10px auto;border:solid 1pt rgb(195, 195, 231);border-radius:15px;">
+                                <div class="card-divider" style="border-radius:15px;">
+                                    <p class="small">{{fname}} {{lname}}</p>
+                                </div>
+
+                                <div class="card-section" style="border-radius:15px;">
+                                    <h4 style="text-align:center;">Emails</h4>
+                                    {{#each emails}}
+                                    <p>{{.}}</p>
+                                    {{/each}}
+                                </div>
+
+                                <div class="card-section">
+                                    <h4 style="text-align:center;">Phones</h4>
+                                    {{#each phones}}
+                                    <p>{{.}}</p>
+                                    {{/each}}
+                                </div>
+
+                                <div class="card-section">
+                                    <div class="grid-x grid-padding-x">
+                                        <div class="cell small-4">
+                                            <a href="/contacts/contact/delete/{{_id}}" id="contact-delete-button"
+                                                data-rmtId="{{_id}}" class="button alert" style="border-radius:15px;">
+                                                <i data-rmtId="{{_id}}" class="fa-solid fa-trash fa-fw fa-2x"></i>
+                                            </a>
+                                        </div>
+
+                                        <div class="cell small-4"></div>
+
+                                        <div class="cell small-4">
+                                            <a href="/contacts/contact/{{_id}}" id="contact-edit-button"
+                                                data-rmtId="{{_id}}" class="button warning" style="border-radius:15px;">
+                                                <i data-rmtId="{{_id}}" class="fa-solid fa-pencil fa-fw fa-2x"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+
+        <div class="cell small-12 medium-6">
+            {{>contactform}}
+        </div>
+
+        <div id="dialog"></div>
+        <input id="rmtuserid" type="hidden" value="{{user._id}}">
+        <input id="personal-code" type="hidden">
+    </div>
+</div>

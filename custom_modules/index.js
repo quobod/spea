@@ -10,7 +10,7 @@ import {
   warningStatus,
 } from "./messages.js";
 import { error, log, cls, table } from "./printer.js";
-import { parse, stringify, keys, cap } from "./utils.js";
+import { parse, stringify, keys, cap, size } from "./utils.js";
 import { createHash } from "./hasher.js";
 import * as userManager from "./usermanager.js";
 import {
@@ -34,6 +34,7 @@ export {
   log,
   cls,
   table,
+  size,
   parse,
   stringify,
   keys,

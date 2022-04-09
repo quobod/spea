@@ -78,3 +78,21 @@ export const cap = (arg) => {
 export const stripTags = (input) => {
   return input.replace(/<(?:.|\n)*?>/gm, "");
 };
+
+export const size = (arg = null) => {
+  if (null != arg) {
+    if (Array.isArray(arg)) {
+      return arg.length;
+    } else if (arg instanceof Object && !Array.isArray(arg)) {
+      return Object.keys(arg).length;
+    } else if (
+      !(arg instanceof Object) &&
+      !Array.isArray(arg) &&
+      typeof arg == "string"
+    ) {
+      return arg.length;
+    } else {
+      return NaN;
+    }
+  }
+};

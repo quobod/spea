@@ -3,6 +3,8 @@
   color: rgb(1, 23, 56);
   border: solid 1pt rgb(210, 227, 244);
   border-radius: 15px;
+  max-height: 500px;
+  overflow: scroll;
 }
 
 .dashboard-personal-code-title-container {
@@ -14,7 +16,12 @@
   top: 0;
 }
 
-#search-form {
+#new-contact-form {
+  background-color: rgb(200, 200, 200);
+  border-radius: 10px;
+}
+
+/* #search-form {
   transform: translate3d(0, -300%, 0);
   transition: transform 0.6s;
 }
@@ -22,3 +29,4 @@
 #search-form.show {
   transform: translate3d(0, 0, 0);
 }
+ */

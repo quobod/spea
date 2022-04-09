@@ -1,6 +1,4 @@
-import * as constants from "../constants.js";
 import * as elements from "./roomelements.js";
-import * as utils from "../utils.js";
 import {
   removeChildren,
   newElement,
@@ -8,9 +6,11 @@ import {
   addAttribute,
   appendChild,
   getElement,
+  addClickHandler,
+  cap,
 } from "../utils.js";
-
-// ui helper functions
+import { chatType } from "../constants.js";
+import { requestChat } from "./wss.js";
 
 // Exported functions
 
@@ -23,10 +23,12 @@ export const updateUserList = (data) => {
     const userList = elements.peersList;
     const personalCode = elements.personalCode.value;
     removeChildren(userList);
+    const grid = newElement("div");
+    appendChild(userList, grid);
+    addAttribute(grid, "class", "grid-x grid-margin-x align-center");
 
     data.forEach((item, index) => {
-      if (!item.hide) {
-        const grid = newElement("div");
+      if (!item.hide && item.uid != personalCode) {
         const cell = newElement("div");
         const card = newElement("div");
         const cardSection = newElement("div");
@@ -42,7 +44,6 @@ export const updateUserList = (data) => {
         const img = newElement("i");
 
         // Prepare card
-        appendChild(userList, grid);
         appendChild(grid, cell);
         appendChild(cell, card);
         appendChild(card, cardDivider);
@@ -53,18 +54,13 @@ export const updateUserList = (data) => {
         appendChild(cardSection, divContent);
 
         // Prepare card content
-        appendChild(divContent, pFname);
-        appendChild(divContent, pLname);
-        appendChild(divContent, pEmail);
+        // appendChild(divContent, pFname);
+        // appendChild(divContent, pLname);
+        // appendChild(divContent, pEmail);
         appendChild(divControls, videoIcon);
-        appendChild(divControls, chatIcon);
+        // appendChild(divControls, chatIcon);
 
-        addAttribute(
-          grid,
-          "class",
-          "grid-x grid-margin-x small-up-2 medium-up-3 align-center"
-        );
-        addAttribute(cell, "class", "cell");
+        addAttribute(cell, "class", `cell small-12 medium-4`);
         addAttribute(card, "class", "card");
         addAttribute(cardSection, "class", "card-section");
         addAttribute(cardDivider, "class", "card-divider");
@@ -92,27 +88,142 @@ export const updateUserList = (data) => {
         addAttribute(chatIcon, "id", `${item.uid}`);
         addAttribute(img, "class", "fa-solid fa-user fa-fw fa-5x");
         addAttribute(img, "style", "width:100%;");
-        // addAttribute(divContent, "class", "cell small-12");
 
-        cardDivider.innerHTML = `${item.fname} ${item.lname}`;
+        // cardDivider.innerHTML = `${item.fname} ${item.lname}`;
+        cardDivider.innerHTML = `${cap(item.fname)}`;
         pEmail.innerHTML = `${item.email}`;
         pFname.innerHTML = `${item.fname}`;
         pLname.innerHTML = `${item.lname}`;
 
-        /*   addHandler(cardHeader, "click", () => {
-          const panel = cardHeader.nextElementSibling;
-          cardHeader.classList.toggle("active");
-          if (panel.style.maxHeight) {
-            panel.style.maxHeight = null;
-          } else {
-            panel.style.maxHeight = panel.scrollHeight + "px";
-          }
-        }); */
+        if (item.uid != personalCode) {
+          if (item.hasCamera) {
+            addClickHandler(videoIcon, (e) => {
+              const data = {
+                sender: personalCode,
+                receiver: e.target.id,
+                requestType: chatType.VIDEO_CHAT,
+              };
+              requestChat(data);
+            });
 
-        if (item.uid != personalCode && item.hasCamera) {
+            addClickHandler(chatIcon, (e) => {
+              const data = {
+                sender: personalCode,
+                receiver: e.target.id,
+                requestType: chatType.TEXT_CHAT,
+              };
+              requestChat(data);
+            });
+            cardDivider.innerHTML = `${item.fname} ${item.lname}`;
+          } else {
+            addClickHandler(chatIcon, (e) => {
+              const data = {
+                sender: personalCode,
+                receiver: e.target.id,
+                requestType: chatType.TEXT_CHAT,
+              };
+              requestChat(data);
+            });
+          }
           appendChild(card, divControls);
         }
       }
     });
   }
 };
+
+export const createChatRequestCallout = (
+  userDetails,
+  handleChatAccept,
+  handleChatReject,
+  handleChatRequestNoResponse
+) => {
+  const { sender, type } = userDetails;
+  const messageCallout = newElement("div");
+  const messageBody = newElement("div");
+  const controlsDiv = newElement("div");
+  const messageHeader = newElement("h5");
+  const message = newElement("p");
+  const closeButton = newElement("button");
+  const rejectButton = newElement("button");
+  const acceptButton = newElement("button");
+  const span = newElement("span");
+
+  // Attributes
+  addAttribute(messageCallout, "class", "callout primary small");
+  addAttribute(messageCallout, "data-closable", "");
+  addAttribute(closeButton, "class", "close-button");
+  addAttribute(closeButton, "aria-label", "");
+  addAttribute(closeButton, "type", "button");
+  addAttribute(closeButton, "data-close", "");
+  addAttribute(span, "aria-hidden", "true");
+  addAttribute(
+    controlsDiv,
+    "class",
+    "grid-x grid-margin-x align-center small-12 medium-up-6"
+  );
+  addAttribute(rejectButton, "class", "cell button alert");
+  addAttribute(acceptButton, "class", "cell button success");
+  // addAttribute(rejectButton, "style", "width:45%; margin-right:5px;");
+  // addAttribute(acceptButton, "style", "width:45%;margin-left:5px;");
+  addAttribute(message, "style", "font-size:1.5rem;font-weight:bolder;");
+
+  // Inner HTML
+  rejectButton.innerHTML = "Reject";
+  acceptButton.innerHTML = "Accept";
+  span.innerHTML = `&times;`;
+  message.innerHTML = `${cap(sender.fname)} ${cap(sender.lname)} wants to ${
+    type == "VIDEO_CHAT" ? "video chat" : "text chat"
+  } with you`;
+
+  // Append elements
+  appendChild(messageCallout, message);
+  appendChild(messageCallout, controlsDiv);
+  appendChild(controlsDiv, rejectButton);
+  appendChild(controlsDiv, acceptButton);
+  appendChild(messageCallout, closeButton);
+  appendChild(closeButton, span);
+
+  // Register click event
+  addClickHandler(closeButton, (e) => {
+    messageCallout.remove();
+    handleChatRequestNoResponse();
+  });
+  addClickHandler(rejectButton, handleChatReject);
+  addClickHandler(acceptButton, handleChatAccept);
+
+  return messageCallout;
+};
+
+export const chatRequestStatus = (data) => {
+  const { receiver } = data;
+  const callout = newElement("div");
+  const h5 = newElement("h5");
+  const closeButton = newElement("button");
+  const span = newElement("span");
+
+  // Add Attributes
+  addAttribute(callout, "class", "callout primary small");
+  addAttribute(callout, "data-closable", "");
+  addAttribute(closeButton, "class", "close-button");
+  addAttribute(closeButton, "aria-label", "");
+  addAttribute(closeButton, "type", "button");
+  addAttribute(closeButton, "data-close", "");
+  addAttribute(span, "aria-hidden", "true");
+
+  // innerHTML
+  h5.innerHTML = `<b>Calling ${cap(receiver.fname)} ${cap(receiver.lname)}</b>`;
+  span.innerHTML = `&times;`;
+
+  // Append elements
+  appendChild(callout, h5);
+  appendChild(callout, closeButton);
+  appendChild(closeButton, span);
+
+  // Register click event
+  addClickHandler(closeButton, (e) => callout.remove());
+
+  return callout;
+};
+
+// Helpers

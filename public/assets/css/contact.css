@@ -1,4 +1,4 @@
-#new-contact-form {
+/* #new-contact-form {
   position: absolute;
   left: 10%;
   z-index: 110;
@@ -11,7 +11,7 @@
 
 #new-contact-form.show {
   transform: translate3d(0, 0, 0);
-}
+} */
 
 .edit-contact-controls {
   margin: auto;

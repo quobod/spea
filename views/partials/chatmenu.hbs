@@ -1,36 +1,30 @@
-<div class="title-bar hide" data-responsive-toggle="signedinmenu" data-hide-for="medium">
-    <button class="menu-icon" type="button" data-toggle="signedinmenu"></button>
-    <div class="title-bar-title">Menu</div>
-</div>
+<div class="grid-container fluid">
 
-<div class="top-bar" id="signedinmenu">
-    <div class="top-bar-left">
-        <ul class="dropdown vertical medium-horizontal menu" data-dropdown-menu>
-            <li class="menu-text">
-                <span class="app-name">
-                    {{#if user}}
-                    {{user.fname}}
-                    {{else}}
-                    RMedia Technology
-                    {{/if}}
-                </span>
-            </li>
-        </ul>
+    <div class="title-bar hide" data-responsive-toggle="signedinmenu" data-hide-for="medium">
+        <button class="menu-icon" type="button" data-toggle="signedinmenu"></button>
+        <div class="title-bar-title">Menu</div>
     </div>
 
-    <div class="top-bar-right">
-        <ul class="dropdown vertical medium-horizontal menu">
-            <li>
-                <a href="/user/dashboard" id="signed-in-dashboard-link">
-                    Dashboard
-                </a>
-            </li>
-            <li>
-                <a href="#" id="settings-link">
-                    Show Settings
-                </a>
-            </li>
-            <li><a href="/auth/signout">Signout</a></li>
-        </ul>
+    <div class="top-bar" id="signedinmenu">
+        <div class="top-bar-left">
+            <ul class="dropdown vertical medium-horizontal menu" data-dropdown-menu>
+                <li class="menu-text">
+                    <span class="app-name">
+                        RMedia Technology
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="top-bar-right">
+            <ul class="dropdown vertical medium-horizontal menu">
+                <li>
+                    <a href="/user" id="signed-in-dashboard-link">
+                        Dashboard
+                    </a>
+                </li>
+                <li><a href="/auth/signout">Signout</a></li>
+            </ul>
+        </div>
     </div>
 </div>

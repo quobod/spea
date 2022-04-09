@@ -13,13 +13,6 @@
 
 <body>
     {{>menu}}
-    {{#if dashboard}}
-    {{>contactform}}
-    {{>searchform}}
-    {{/if}}
-    {{#if room}}
-    {{>settings}}
-    {{/if}}
     {{>messages}}
 
     <main class="grid-container fluid main">
@@ -56,9 +49,23 @@
 <script src="/assets/js/dashboardelements.js" type="module"></script>
 <script src="/assets/js/dashboardmain.js" type="module"></script>
 {{/if}}
-{{else}}
-<script src="/assets/js/dashboardelements.js" type="module"></script>
-<script src="/assets/js/authutils.js" type="module"></script>
+{{#if multicontact}}
+<script src="/assets/js/contactsmainelements.js" type="module"></script>
+<script src="/assets/js/contactsmain.js" type="module"></script>
 {{/if}}
+{{#if singlecontact}}
+<script src="/assets/js/singlecontactelements.js" type="module"></script>
+<script src="/assets/js/singlecontactmain.js" type="module"></script>
+{{/if}}
+{{/if}}
+<script type="javascript">
+    // Messages
+    addHandler(elements.closeButton, "click", (e) => {
+    const target = e.target;
+    const parent = target.parentElement;
+    const grandParent = parent.parentElement;
+    grandParent.remove();
+    });
+</script>
 
 </html>

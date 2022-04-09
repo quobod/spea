@@ -8,6 +8,7 @@ import {
 
 // Dialog
 export const dialog = document.querySelector("#dialog");
+export const calloutParent = document.querySelector("#callout-parent");
 
 // Messages
 export const closeButton = document.querySelector(".close-button");

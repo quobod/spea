@@ -33,6 +33,7 @@ import {
 import landing from "./routers/home/index.js";
 import auth from "./routers/auth/index.js";
 import user from "./routers/user/index.js";
+import contact from "./routers/contact/index.js";
 import User from "./models/UserModel.js";
 
 dotenv.config();
@@ -170,6 +171,7 @@ app.get(["/*"], csrfProtection, (req, res, next) => {
 app.use("/", landing);
 app.use("/auth", auth);
 app.use("/user", user);
+app.use("/contacts", contact);
 
 const server = http.createServer(app);
 const io = new Server(server);
@@ -250,9 +252,41 @@ io.on("connection", (socket) => {
       log(user);
     }
   });
+
+  socket.on("sendchatrequest", (data) => {
+    const { sender, receiver, requestType } = data;
+
+    const userSender = userManager.getUser(sender);
+    const userReceiver = userManager.getUser(receiver);
+
+    if (userSender && userReceiver) {
+      log(
+        `\n\t${userSender.fname} ${userSender.lname} is requesting a ${requestType} with ${userReceiver.fname}`
+      );
+
+      io.to(receiver).emit("chatrequest", {
+        sender: userSender,
+        type: requestType,
+      });
+
+      io.to(sender).emit("chatrequested", { receiver: userReceiver });
+    }
+  });
+
+  socket.on("chataccepted", (data) => {
+    log(`\n\tChat request accepted ${stringify(data)}`);
+  });
+
+  socket.on("chatrejected", (data) => {
+    log(`\n\tChat request rejected ${stringify(data)}`);
+  });
+
+  socket.on("chatrequestnoresponse", (data) => {
+    log(`\n\tChat request no response ${stringify(data)}`);
+  });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   cls();
   log(
     successMessage(
