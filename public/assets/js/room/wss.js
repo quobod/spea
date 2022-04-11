@@ -18,24 +18,19 @@ export const registerSocketEvents = (socket) => {
   socketIO = socket;
 
   socket.on("connect", () => {
-    store.setSocketId(socket.id);
     elements.personalCode.value = socket.id;
     ui.updatePersonalCode(socket.id);
 
-    console.log(
-      `\n\tSuccessfully connected to socket.io server\n\tReceived personal code: ${
-        store.getState().id
-      }`
-    );
+    console.log(`\n\tSuccessfully connected to socket.io server\n`);
   });
 
   socket.on("updateuserlist", (data) => {
-    console.log(`\n\tUpdated User List: ${JSON.stringify(data)}\n\n`);
+    // console.log(`\n\tUpdated User List: ${JSON.stringify(data)}\n\n`);
     ui.updateUserList(data);
   });
 
   socket.on("chatrequest", (data) => {
-    log(`\n\tChat request data ${stringify(data)}\n`);
+    log(`\n\tReceived chat request. Request Data ${stringify(data)}\n`);
 
     userDetails = {
       sender: data.sender.uid,

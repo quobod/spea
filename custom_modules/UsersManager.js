@@ -58,7 +58,7 @@ class UserManager {
   updateUser = (uid, objArg) => {
     if (null != objArg && typeof objArg === "object") {
       const userIndex = this.users.findIndex(
-        (u) => u.uid === uid || u.rmtId === uid
+        (u) => u.socketId === uid || u.rmtId === uid
       );
 
       if (userIndex != -1) {

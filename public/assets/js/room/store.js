@@ -16,7 +16,9 @@ export const setSocketId = (sid) => {
     }
   } else {
     socket.id = sid;
-    log(`\n\tsetSocketId method received a new socket ID: ${sid}`);
+    log(
+      `\n\tsetSocketId method had updated the socket object with socket ID: ${sid}`
+    );
   }
 };
 

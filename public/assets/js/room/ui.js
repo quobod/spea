@@ -14,9 +14,7 @@ import { requestChat } from "./wss.js";
 
 // Exported functions
 
-export const updatePersonalCode = (id) => {
-  elements.personalCode.value = id;
-};
+export const updatePersonalCode = (id) => (elements.personalCode.value = id);
 
 export const updateUserList = (data) => {
   if (elements.peersList) {
