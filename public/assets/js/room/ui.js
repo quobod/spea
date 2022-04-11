@@ -22,13 +22,14 @@ export const updateUserList = (data) => {
   if (elements.peersList) {
     const userList = elements.peersList;
     const personalCode = elements.personalCode.value;
+    const rmtId = elements.rmtIdInput.value;
     removeChildren(userList);
     const grid = newElement("div");
     appendChild(userList, grid);
     addAttribute(grid, "class", "grid-x grid-margin-x align-center");
 
     data.forEach((item, index) => {
-      if (!item.hide && item.uid != personalCode) {
+      if (!item.hide && item.rmtId != rmtId) {
         const cell = newElement("div");
         const card = newElement("div");
         const cardSection = newElement("div");
@@ -95,38 +96,38 @@ export const updateUserList = (data) => {
         pFname.innerHTML = `${item.fname}`;
         pLname.innerHTML = `${item.lname}`;
 
-        if (item.uid != personalCode) {
-          if (item.hasCamera) {
-            addClickHandler(videoIcon, (e) => {
-              const data = {
-                sender: personalCode,
-                receiver: e.target.id,
-                requestType: chatType.VIDEO_CHAT,
-              };
-              requestChat(data);
-            });
+        // if (item.rmtId != rmtId) {
+        if (item.hasCamera) {
+          addClickHandler(videoIcon, (e) => {
+            const data = {
+              sender: personalCode,
+              receiver: e.target.id,
+              requestType: chatType.VIDEO_CHAT,
+            };
+            requestChat(data);
+          });
 
-            addClickHandler(chatIcon, (e) => {
-              const data = {
-                sender: personalCode,
-                receiver: e.target.id,
-                requestType: chatType.TEXT_CHAT,
-              };
-              requestChat(data);
-            });
-            cardDivider.innerHTML = `${item.fname} ${item.lname}`;
-          } else {
-            addClickHandler(chatIcon, (e) => {
-              const data = {
-                sender: personalCode,
-                receiver: e.target.id,
-                requestType: chatType.TEXT_CHAT,
-              };
-              requestChat(data);
-            });
-          }
-          appendChild(card, divControls);
+          addClickHandler(chatIcon, (e) => {
+            const data = {
+              sender: personalCode,
+              receiver: e.target.id,
+              requestType: chatType.TEXT_CHAT,
+            };
+            requestChat(data);
+          });
+          cardDivider.innerHTML = `${item.fname} ${item.lname}`;
+        } else {
+          addClickHandler(chatIcon, (e) => {
+            const data = {
+              sender: personalCode,
+              receiver: e.target.id,
+              requestType: chatType.TEXT_CHAT,
+            };
+            requestChat(data);
+          });
         }
+        appendChild(card, divControls);
+        // }
       }
     });
   }

@@ -32,6 +32,13 @@ const start = () => {
 
 start();
 
+addEventListener("beforeunload", (event) => {
+  log(`\n\tBefore unload\n`);
+  const rmtUserId = elements.rmtIdInput.value;
+  const data = { rmtUser: rmtUserId };
+  // socket.emit("disconnectme", data);
+});
+
 // Elements
 const roomNameInput = document.querySelector("#room-name-input");
 const joinRoomInput = document.querySelector("#join-room-input");

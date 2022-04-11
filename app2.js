@@ -27,7 +27,7 @@ import {
   infoMessage,
   stringify,
   keys,
-  userManager,
+  dlog,
   dbMessage,
 } from "./custom_modules/index.js";
 import landing from "./routers/home/index.js";
@@ -35,6 +35,7 @@ import auth from "./routers/auth/index.js";
 import user from "./routers/user/index.js";
 import contact from "./routers/contact/index.js";
 import User from "./models/UserModel.js";
+import userManager from "./custom_modules/UsersManager.js";
 
 dotenv.config();
 mongoose.Promise = global.Promise;
@@ -179,11 +180,13 @@ const io = new Server(server);
 io.on("connection", (socket) => {
   socket.on("registerme", (data) => {
     const { socketId, rmtId, hasCamera } = data;
-    log(`\n\tRegistering: ${socketId}\t${rmtId}\t${hasCamera}\n`);
+    dlog(`Registering: ${socketId}\t${rmtId}\t${hasCamera}`);
 
     registerMe(data, (results) => {
       if (results.status) {
         io.emit("updateuserlist", results.userlist);
+      } else {
+        dlog(results.cause);
       }
     });
   });
@@ -204,27 +207,12 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const user = userManager.getUser(socket.id);
 
-    if (user) {
-      console.log(`\n\tUser ${user.fname} ${user.lname} disconnected`);
-      userManager.removeUserBySocketId(user.uid);
-    } else {
-      console.log(`\n\tUser disconnected:\t${socket.id}`);
-      userManager.removeUserBySocketId(socket.id);
-    }
-
-    io.emit("updateuserlist", userManager.getUsers());
-    logPeers();
-  });
-
-  socket.on(`disconnectme`, (data) => {
-    const { rmtUser } = data;
-
-    const user = userManager.getUser(rmtUser);
-    console.log(`Socket ${socket.id} disconnected`);
-
     if (user != null) {
       console.log(`\n\tUser ${user.fname} ${user.lname} disconnected`);
-      userManager.removeUserBySocketId(socket.id);
+      userManager.removeUserById(user.socketId);
+    } else {
+      console.log(`\n\tSocket user disconnected:\t${socket.id}`);
+      userManager.removeUserById(socket.id);
     }
 
     io.emit("updateuserlist", userManager.getUsers());
@@ -284,6 +272,10 @@ io.on("connection", (socket) => {
   socket.on("chatrequestnoresponse", (data) => {
     log(`\n\tChat request no response ${stringify(data)}`);
   });
+
+  socket.on("getonlineusers", (objContainer) => {
+    objContainer = userManager.getUsers().filter((user) => user.hide == false);
+  });
 });
 
 server.listen(PORT, "0.0.0.0", () => {
@@ -297,9 +289,11 @@ server.listen(PORT, "0.0.0.0", () => {
 
 function logPeers() {
   const users = userManager.getUsers();
-  console.log(infoMessage(`\n\tConnected Peers: ${users.length}`));
   if (users.length > 0) {
+    dlog(infoMessage(`Connected Peers: ${users.length}`));
     users.forEach((p) => log(`\t\t${stringify(p)}`));
+  } else {
+    dlog(infoMessage(`${users.length} Connected Peers`));
   }
 }
 
@@ -309,20 +303,36 @@ async function registerMe(userData, done) {
   await User.findById(rmtId)
     .then((user) => {
       const res = user.withoutPassword();
-      const results = userManager.addUser({
-        socketId: `${socketId}`,
-        rmtId: `${rmtId}`,
-        fname: user.fname,
-        lname: user.lname,
-        email: user.email,
-        hasCamera: hasCamera,
-      });
+      const registeredUser = userManager.getUser(rmtId);
+      let results;
 
-      if (results) {
+      if (registeredUser) {
+        dlog(`${rmtId} is registered`);
+        results = userManager.updateUser(rmtId, {
+          socketId: `${socketId}`,
+          fname: user.fname,
+          lname: user.lname,
+          email: user.email,
+          hasCamera: hasCamera,
+        });
+      } else {
+        results = userManager.addUser({
+          socketId: `${socketId}`,
+          rmtId: `${rmtId}`,
+          fname: user.fname,
+          lname: user.lname,
+          email: user.email,
+          hasCamera: hasCamera,
+        });
+      }
+      if (results || results.status) {
         done({ status: true, userlist: userManager.getUsers() });
         logPeers();
       } else {
-        done({ status: false });
+        done({
+          status: false,
+          cause: `UserManager unable to register user ID: ${user._id}`,
+        });
       }
     })
     .catch((err) => {

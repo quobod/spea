@@ -103,7 +103,7 @@ function requestRegistration(socket) {
         data.hasCamera = true;
       }
 
-      socket.emit("registerme", data);
+      socketIO.emit("registerme", data);
     }, 1200);
   }
 }

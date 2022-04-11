@@ -9,8 +9,17 @@ import {
   successStatus,
   warningStatus,
 } from "./messages.js";
-import { error, log, cls, table } from "./printer.js";
-import { parse, stringify, keys, cap, size } from "./utils.js";
+import { error, log, cls, table, dlog } from "./printer.js";
+import {
+  parse,
+  stringify,
+  keys,
+  cap,
+  size,
+  isArray,
+  isObject,
+  isNull,
+} from "./utils.js";
 import { createHash } from "./hasher.js";
 import * as userManager from "./usermanager.js";
 import {
@@ -34,6 +43,7 @@ export {
   log,
   cls,
   table,
+  dlog,
   size,
   parse,
   stringify,
@@ -41,6 +51,9 @@ export {
   userManager,
   dbMessage,
   cap,
+  isArray,
+  isObject,
+  isNull,
   alphanumeric,
   decimalsOnly,
   integersOnly,

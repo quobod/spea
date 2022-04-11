@@ -41,7 +41,7 @@ export const signedIn = asyncHandler(async (req, res, next) => {
 
 export const signedOut = asyncHandler(async (req, res, next) => {
   if (req.isAuthenticated()) {
-    res.redirect("/user/dashboard");
+    res.redirect("/user");
   } else {
     next();
   }

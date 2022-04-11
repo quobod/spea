@@ -96,3 +96,10 @@ export const size = (arg = null) => {
     }
   }
 };
+
+export const isObject = (data) =>
+  typeof data === "object" && !Array.isArray(data) && null != data;
+
+export const isArray = (data) => null != data && Array.isArray(data);
+
+export const isNull = (data) => null == data || undefined == data;

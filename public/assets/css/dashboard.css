@@ -1,0 +1,16 @@
+#dashboard-main {
+  background-color: rgb(244, 244, 255);
+  text-align: center;
+  margin: 60px;
+}
+
+#dashboard-main div.index {
+  background-color: rgb(173, 212, 240);
+  color: rgb(10, 10, 10);
+  transition: background-color 0.6ms, color 0.6ms;
+}
+
+#dashboard-main div.index:hover {
+  background-color: rgb(2, 33, 56);
+  color: rgb(173, 212, 240);
+}
