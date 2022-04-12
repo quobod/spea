@@ -251,7 +251,9 @@ io.on("connection", (socket) => {
         `${userSender.fname} ${userSender.lname} is requesting a ${requestType} with ${userReceiver.fname} ${userReceiver.lname}`
       );
 
-      io.to(receiver).emit("chatrequest", {
+      dlog(`Receiver's socket ID: ${userReceiver.socketId}`);
+
+      io.to(userReceiver.socketId).emit("chatrequest", {
         sender: userSender,
         type: requestType,
       });
