@@ -237,4 +237,45 @@ export const chatRequestStatus = (data) => {
   return callout;
 };
 
+export const handleChatRequestResponse = (data) => {
+  const { response, receiver } = data;
+  const callout = newElement("div");
+  const h5 = newElement("h5");
+  const closeButton = newElement("button");
+  const span = newElement("span");
+  let responseMessage;
+
+  // Add Attributes
+  addAttribute(callout, "class", "callout primary small");
+  addAttribute(callout, "data-closable", "");
+  addAttribute(closeButton, "class", "close-button");
+  addAttribute(closeButton, "aria-label", "");
+  addAttribute(closeButton, "type", "button");
+  addAttribute(closeButton, "data-close", "");
+  addAttribute(span, "aria-hidden", "true");
+
+  switch (response.toLowerCase().trim()) {
+    case "rejected":
+      responseMessage = `${receiver.fname} rejected your call`;
+      break;
+
+    default:
+      responseMessage = `${receiver.fname} is not available at this time`;
+  }
+
+  // innerHTML
+  h5.innerHTML = `<b>${responseMessage}</b>`;
+  span.innerHTML = `&times;`;
+
+  // Append elements
+  appendChild(callout, h5);
+  appendChild(callout, closeButton);
+  appendChild(closeButton, span);
+
+  // Register click event
+  addClickHandler(closeButton, (e) => callout.remove());
+
+  return callout;
+};
+
 // Helpers

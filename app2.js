@@ -255,10 +255,13 @@ io.on("connection", (socket) => {
 
       io.to(userReceiver.socketId).emit("chatrequest", {
         sender: userSender,
-        type: requestType,
+        requestType: requestType,
       });
 
-      io.to(sender).emit("chatrequested", { receiver: userReceiver });
+      io.to(sender).emit("chatrequested", {
+        receiver: userReceiver,
+        requestType: requestType,
+      });
     }
   });
 
@@ -268,10 +271,30 @@ io.on("connection", (socket) => {
 
   socket.on("chatrejected", (data) => {
     dlog(`Chat request rejected ${stringify(data)}`);
+    const { senderSocketId, receiverSocketId } = data;
+
+    const userReceiver = userManager.getUser(receiverSocketId);
+
+    if (userReceiver) {
+      io.to(senderSocketId).emit("chatrejected", {
+        response: "rejected",
+        receiver: userReceiver,
+      });
+    }
   });
 
   socket.on("chatrequestnoresponse", (data) => {
     dlog(`Chat request no response ${stringify(data)}`);
+    const { senderSocketId, receiverSocketId } = data;
+
+    const userReceiver = userManager.getUser(receiverSocketId);
+
+    if (userReceiver) {
+      io.to(senderSocketId).emit("noresponse", {
+        response: "noresponse",
+        receiver: userReceiver,
+      });
+    }
   });
 
   socket.on("getonlineusers", (objContainer) => {

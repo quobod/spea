@@ -33,9 +33,12 @@ export const registerSocketEvents = (socket) => {
     log(`\n\tReceived chat request. Request Data ${stringify(data)}\n`);
 
     userDetails = {
-      sender: data.sender.uid,
-      receiver: socketIO.id,
+      senderSocketId: data.sender.socketId,
+      receiverSocketId: socketIO.id,
+      type: data.requestType,
     };
+
+    log(`\n\tUser Details: ${stringify(userDetails)}\n`);
 
     const callout = ui.createChatRequestCallout(
       data,
@@ -50,9 +53,28 @@ export const registerSocketEvents = (socket) => {
 
   socket.on("chatrequested", (data) => {
     log(`\n\tRequested chat ${stringify(data)}`);
+
+    userDetails = {
+      receiverSocketId: data.receiver.socketId,
+      senderSocketId: socketIO.id,
+      type: data.requestType,
+    };
+
+    log(`\n\tUser Details: ${stringify(userDetails)}\n`);
+
     const callout = ui.chatRequestStatus(data);
     removeChildren(getElement("callout-parent"));
     appendChild(getElement("callout-parent"), callout);
+  });
+
+  socket.on("chatrejected", (data) => {
+    const { response, receiver } = data;
+    handleResponse(data);
+  });
+
+  socket.on("noresponse", (data) => {
+    const { response, receiver } = data;
+    handleResponse(data);
   });
 
   requestRegistration(socket);
@@ -104,27 +126,25 @@ function requestRegistration(socket) {
 }
 
 const handleChatAccept = () => {
-  userDetails = {
-    from: userDetails.receiver,
-    to: userDetails.sender,
-    response: "accept",
-  };
+  userDetails.response = "accept";
   socketIO.emit("chataccepted", userDetails);
   removeChildren(getElement("callout-parent"));
 };
 
 const handleChatReject = () => {
-  userDetails = {
-    from: userDetails.receiver,
-    to: userDetails.sender,
-    response: "reject",
-  };
+  userDetails.response = "reject";
   socketIO.emit("chatrejected", userDetails);
   removeChildren(getElement("callout-parent"));
 };
 
 const handleChatRequestNoResponse = () => {
-  userDetails = { from: userDetails.receiver, to: userDetails.sender };
+  userDetails.response = "noresponse";
   socketIO.emit("chatrequestnoresponse", userDetails);
   removeChildren(getElement("callout-parent"));
+};
+
+const handleResponse = (data) => {
+  const callout = ui.handleChatRequestResponse(data);
+  removeChildren(getElement("callout-parent"));
+  appendChild(getElement("callout-parent"), callout);
 };
