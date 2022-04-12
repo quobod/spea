@@ -2,7 +2,7 @@
   height: calc(100vh - 50vh);
   width: 100%;
   overflow: scroll;
-  border: solid 1pt red;
+  /* border: solid 1pt red; */
   margin: auto;
 }
 
@@ -24,6 +24,6 @@
 }
 
 #peers-container {
-  border: solid 1pt rgb(159, 7, 116);
+  /* border: solid 1pt rgb(159, 7, 116); */
   position: relative;
 }
