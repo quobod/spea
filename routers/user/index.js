@@ -19,6 +19,8 @@ user.route("/profile").get(reauthorize, viewUserProfile).post(userReauth);
 
 user.route("/profile/update").post(updateUserProfile);
 
-user.route("/room").get(signedIn, userRoom).post(signedIn, joinRoom);
+user.route("/room").get(signedIn, userRoom);
+
+user.route("/room/join").post(signedIn, joinRoom).get(signedIn, joinRoom);
 
 export default user;

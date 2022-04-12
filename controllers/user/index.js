@@ -9,7 +9,7 @@ import User from "../../models/UserModel.js";
 import { create } from "../../custom_modules/captcha.js";
 
 const logger = bunyan.createLogger({ name: "User Controller" });
-const nanoid = customAlphabet("02468ouqtyminv", 13);
+const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz", 13);
 const AccessToken = twilio.jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
 
@@ -97,6 +97,7 @@ export const userRoom = asyncHandler(async (req, res) => {
     res.render("user/room", {
       title: "Room",
       rmtId: rmtUser._id,
+      hasToken: false,
       room: true,
       user: true,
       rmtUser,
@@ -192,19 +193,14 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 //  @desc           Video Chat
-//  @route          POST /user/room
+//  @route          GET /user/room/join
 //  @access         Private
 export const joinRoom = asyncHandler(async (req, res) => {
-  logger.info(`POST: /user/room`);
+  logger.info(`POST: /user/room/join`);
   const user = req.user.withoutPassword();
 
-  // return 400 if the request has an empty body or no roomName
-  if (!req.body || !req.body.roomName) {
-    req.flash("warning_msg", "Must enter a room name");
-    return res.redirect("/user/dashboard");
-  }
-
-  const roomName = req.body.roomName;
+  const { type } = req.body;
+  const roomName = nanoid();
   try {
     // find or create a room with the given roomName
     findOrCreateRoom(roomName);
@@ -214,7 +210,7 @@ export const joinRoom = asyncHandler(async (req, res) => {
 
     if (token) {
       res.render("user/room", {
-        title: "Chat",
+        title: "Room",
         user: user,
         rmtId: user._id,
         room: true,

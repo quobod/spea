@@ -21,6 +21,7 @@ import twilio from "twilio";
 import connectDB from "./config/db.js";
 import passportConfig from "./config/passport.js";
 import { create } from "./custom_modules/captcha.js";
+import adapter from "webrtc-adapter";
 import {
   log,
   cls,
@@ -34,7 +35,9 @@ import {
 import landing from "./routers/home/index.js";
 import auth from "./routers/auth/index.js";
 import user from "./routers/user/index.js";
+import contact from "./routers/contact/index.js";
 import User from "./models/UserModel.js";
+import userManager from "./custom_modules/UsersManager.js";
 
 dotenv.config();
 mongoose.Promise = global.Promise;
@@ -171,21 +174,21 @@ app.get(["/*"], csrfProtection, (req, res, next) => {
 app.use("/", landing);
 app.use("/auth", auth);
 app.use("/user", user);
+app.use("/contacts", contact);
 
 const server = https.createServer(options, app);
 const io = new Server(server);
 
 io.on("connection", (socket) => {
   socket.on("registerme", (data) => {
-    const { socketId, rmtId } = data;
-    log(
-      `\nsocket server received user data: ${stringify(
-        data
-      )}\nNow calling registerMe method.\n`
-    );
+    const { socketId, rmtId, hasCamera } = data;
+    dlog(`Registering: ${socketId}\t${rmtId}\t${hasCamera}`);
+
     registerMe(data, (results) => {
       if (results.status) {
         io.emit("updateuserlist", results.userlist);
+      } else {
+        dlog(results.cause);
       }
     });
   });
@@ -196,17 +199,7 @@ io.on("connection", (socket) => {
     const peer = userManager.getUser(userId);
 
     if (peer) {
-      peer.hide = show;
-      io.emit("updateuserlist", userManager.getUsers());
-    }
-  });
-
-  socket.on("changevisibility", (data) => {
-    const { userId, show } = data;
-
-    const peer = userManager.getUser(userId);
-
-    if (peer) {
+      dlog(`User ${peer.fname} ${peer.lname} wants to go invisible: ${show}`);
       peer.hide = show;
       io.emit("updateuserlist", userManager.getUsers());
     }
@@ -215,8 +208,11 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const user = userManager.getUser(socket.id);
 
-    if (user) {
-      console.log(`\n\tUser ${user.fname} ${user.lname} disconnected`);
+    if (user != null) {
+      dlog(`User ${user.fname} ${user.lname} disconnected`);
+      userManager.removeUserById(user.socketId);
+    } else {
+      dlog(`Socket user disconnected:\t${socket.id}`);
       userManager.removeUserById(socket.id);
     }
 
@@ -224,92 +220,100 @@ io.on("connection", (socket) => {
     logPeers();
   });
 
-  socket.on("preoffer", (data) => {
-    const { calleePersonalCode, callType } = data;
+  socket.on("participantdisconnected", (data) => {
+    const { rmtUser } = data;
+    const user = userManager.getUser(rmtUser);
 
-    const callerConnectedPeer = userManager.getUser(socket.id);
-    const calleeConnectedPeer = userManager.getUser(calleePersonalCode);
+    dlog(`Participant ${rmtUser} disconnected\n`);
 
-    const caller = {
-      fname: callerConnectedPeer.fname,
-      lname: callerConnectedPeer.lname,
-      email: callerConnectedPeer.email,
-    };
+    dlog(`User Count: ${userManager.getUserCount()}\n`);
+  });
 
-    if (callerConnectedPeer) {
-      const data = {
-        callerSocketId: socket.id,
-        caller,
-        callType,
-      };
+  socket.on("participant", (data) => {
+    const { rmtId, participantIdentity, type } = data;
+    const user = userManager.getUser(rmtId);
 
-      console.log(
-        `\n\tPreoffer sent by ${callerConnectedPeer.fname} ${
-          callerConnectedPeer.lname
-        } to ${calleeConnectedPeer.fname} ${
-          calleeConnectedPeer.lname
-        }\n\tData:\t${JSON.stringify(data)}`
+    dlog(`SocketIO participant emitter invoked`);
+
+    if (user) {
+      dlog(`Received participant identity`);
+      user.participantIdentity = participantIdentity;
+      dlog(user);
+    }
+  });
+
+  socket.on("sendchatrequest", (data) => {
+    const { sender, receiver, requestType } = data;
+
+    const userSender = userManager.getUser(sender);
+    const userReceiver = userManager.getUser(receiver);
+
+    if (userSender && userReceiver) {
+      dlog(
+        `${userSender.fname} ${userSender.lname} is requesting a ${requestType} with ${userReceiver.fname} ${userReceiver.lname}`
       );
 
-      io.to(calleePersonalCode).emit("preoffer", data);
-    } else {
-      const data = { preOfferAnswer: "CALLEE_NOT_FOUND" };
-      io.to(socket.id).emit("preofferanswer", data);
+      dlog(`Receiver's socket ID: ${userReceiver.socketId}`);
+
+      io.to(userReceiver.socketId).emit("chatrequest", {
+        sender: userSender,
+        requestType: requestType,
+      });
+
+      io.to(sender).emit("chatrequested", {
+        receiver: userReceiver,
+        requestType: requestType,
+      });
     }
   });
 
-  socket.on("preofferanswer", (data) => {
-    console.log(`\n\tPre offer answer came\n\tData: ${JSON.stringify(data)}`);
+  socket.on("chataccepted", (data) => {
+    dlog(`Chat request accepted ${stringify(data)}`);
+    const { senderSocketId, receiverSocketId, type } = data;
 
-    const callee = userManager.getUser(socket.id);
+    io.to(senderSocketId).emit("chatrequestaccepted", {
+      senderSocketId,
+      receiverSocketId,
+      type,
+    });
 
-    const { callerSocketId, preOfferAnswer } = data;
+    io.to(receiverSocketId).emit("chatrequestaccepted", {
+      senderSocketId,
+      receiverSocketId,
+      type,
+    });
+  });
 
-    const connectedPeer = userManager.getUser(callerSocketId);
+  socket.on("chatrejected", (data) => {
+    dlog(`Chat request rejected ${stringify(data)}`);
+    const { senderSocketId, receiverSocketId } = data;
 
-    if (connectedPeer) {
-      data.calleeFname = callee.fname;
-      data.calleeLname = callee.lname;
-      data.calleeEmail = callee.email;
-      io.to(callerSocketId).emit("preofferanswer", data);
+    const userReceiver = userManager.getUser(receiverSocketId);
+
+    if (userReceiver) {
+      io.to(senderSocketId).emit("chatrejected", {
+        response: "rejected",
+        receiver: userReceiver,
+      });
     }
   });
 
-  socket.on("userhungup", (data) => {
-    const { connectedUserSocketId, currentCallee } = data;
-    log(`\n\tHungup data`);
-    log(data);
-    log(`\n\t`);
-    const connectedPeer = userManager.getUser(connectedUserSocketId);
-    const calleePeer = userManager.getUser(currentCallee);
+  socket.on("chatrequestnoresponse", (data) => {
+    dlog(`Chat request no response ${stringify(data)}`);
+    const { senderSocketId, receiverSocketId } = data;
 
-    if (connectedPeer) {
-      log(`\n\tCaller ${stringify(connectedPeer)} hungup call`);
-      // io.to(socket.id).emit("userhungup");
-      io.to(connectedPeer).emit("userhungup");
+    const userReceiver = userManager.getUser(receiverSocketId);
+
+    if (userReceiver) {
+      io.to(senderSocketId).emit("noresponse", {
+        response: "noresponse",
+        receiver: userReceiver,
+      });
     }
-
-    io.to(currentCallee).emit("userhungup");
   });
 
-  socket.on("webrtcsignaling", (data) => {
-    const { connectedUserSocketId } = data;
-
-    console.log(
-      `\n\tReceived web rtc signaling event from ${socket.id}\n\tSending data to ${connectedUserSocketId}`
-    );
-
-    const connectedPeer = userManager.getUser(connectedUserSocketId);
-
-    if (connectedPeer) {
-      io.to(connectedUserSocketId).emit("webrtcsignaling", data);
-    } else {
-      console.log(
-        `\n\tError within the io server webrtcsignaling event handler\n\tReceived data: ${JSON.stringify(
-          data
-        )}`
-      );
-    }
+  socket.on("getonlineusers", (objContainer) => {
+    objContainer = userManager.getUsers().filter((user) => user.hide == false);
   });
 });
 
@@ -331,24 +335,41 @@ function logPeers() {
 }
 
 async function registerMe(userData, done) {
-  const { socketId, rmtId } = userData;
+  const { socketId, rmtId, hasCamera } = userData;
 
   await User.findById(rmtId)
     .then((user) => {
       const res = user.withoutPassword();
-      const results = userManager.addUser({
-        socketId,
-        rmtId,
-        fname: user.fname,
-        lname: user.lname,
-        email: user.email,
-      });
+      const registeredUser = userManager.getUser(rmtId);
+      let results;
 
-      if (results) {
+      if (registeredUser) {
+        dlog(`${rmtId} is registered`);
+        results = userManager.updateUser(rmtId, {
+          socketId: `${socketId}`,
+          fname: user.fname,
+          lname: user.lname,
+          email: user.email,
+          hasCamera: hasCamera,
+        });
+      } else {
+        results = userManager.addUser({
+          socketId: `${socketId}`,
+          rmtId: `${rmtId}`,
+          fname: user.fname,
+          lname: user.lname,
+          email: user.email,
+          hasCamera: hasCamera,
+        });
+      }
+      if (results || results.status) {
         done({ status: true, userlist: userManager.getUsers() });
         logPeers();
       } else {
-        done({ status: false });
+        done({
+          status: false,
+          cause: `UserManager unable to register user ID: ${user._id}`,
+        });
       }
     })
     .catch((err) => {

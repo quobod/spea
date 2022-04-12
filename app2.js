@@ -268,6 +268,19 @@ io.on("connection", (socket) => {
 
   socket.on("chataccepted", (data) => {
     dlog(`Chat request accepted ${stringify(data)}`);
+    const { senderSocketId, receiverSocketId, type } = data;
+
+    io.to(senderSocketId).emit("chatrequestaccepted", {
+      senderSocketId,
+      receiverSocketId,
+      type,
+    });
+
+    io.to(receiverSocketId).emit("chatrequestaccepted", {
+      senderSocketId,
+      receiverSocketId,
+      type,
+    });
   });
 
   socket.on("chatrejected", (data) => {

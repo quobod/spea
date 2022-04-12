@@ -77,6 +77,32 @@ export const registerSocketEvents = (socket) => {
     handleResponse(data);
   });
 
+  socket.on("chatrequestaccepted", (data) => {
+    const { senderSocketId, receiverSocketId, type } = data;
+    let xmlHttp;
+
+    try {
+      xmlHttp = new XMLHttpRequest();
+
+      xmlHttp.open("POST", "/user/room/join");
+
+      xmlHttp.setRequestHeader(
+        "Content-type",
+        "application/x-www-form-urlencoded"
+      );
+
+      xmlHttp.onload = () => {
+        location.href = "/user/room/join";
+      };
+
+      xmlHttp.send({ type: type });
+    } catch (err) {
+      log(err);
+      location.href = "/user/room/join";
+      return;
+    }
+  });
+
   requestRegistration(socket);
 };
 
