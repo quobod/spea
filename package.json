@@ -39,7 +39,8 @@
     "recaptcha": "^1.2.1",
     "socket.io": "^4.4.1",
     "twilio": "^3.75.1",
-    "twilio-video": "^2.21.0"
+    "twilio-video": "^2.21.0",
+    "webrtc-adapter": "^8.1.1"
   },
   "devDependencies": {
     "bunyan": "^1.8.15",

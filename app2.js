@@ -20,6 +20,7 @@ import { fs } from "mz";
 import connectDB from "./config/db.js";
 import passportConfig from "./config/passport.js";
 import { create } from "./custom_modules/captcha.js";
+import adapter from "webrtc-adapter";
 import {
   log,
   cls,

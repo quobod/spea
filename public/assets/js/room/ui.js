@@ -59,8 +59,9 @@ export const updateUserList = (data) => {
         // appendChild(divControls, videoIcon);
         // appendChild(divControls, chatIcon);
 
-        addAttribute(cell, "class", `cell small-12 medium-4`);
-        addAttribute(card, "class", "card");
+        addAttribute(grid, "class", "columns small-12");
+        addAttribute(cell, "class", `row`);
+        addAttribute(card, "class", "card columns small-12 medium-4");
         addAttribute(cardSection, "class", "card-section");
         addAttribute(cardDivider, "class", "card-divider");
         addAttribute(imgPlaceholder, "class", "card-image");

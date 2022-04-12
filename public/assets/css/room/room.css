@@ -1,0 +1,29 @@
+#peers-parent {
+  height: calc(100vh - 50vh);
+  width: 100%;
+  overflow: scroll;
+  border: solid 1pt red;
+  margin: auto;
+}
+
+#peers-list div {
+  width: 100%;
+  max-height: 100%;
+  margin: auto;
+}
+
+#room-namer-input {
+  width: 100%;
+  padding: 3px;
+  margin: 0;
+  margin-top: 3px;
+}
+
+#room-namer-button {
+  margin-top: 3px;
+}
+
+#peers-container {
+  border: solid 1pt rgb(159, 7, 116);
+  position: relative;
+}
