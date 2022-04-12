@@ -84,7 +84,7 @@ export const userDashboard = asyncHandler(async (req, res) => {
 //  @desc           User Room
 //  @route          GET /user/room
 //  @access         Private
-export const userChat = asyncHandler(async (req, res) => {
+export const userRoom = asyncHandler(async (req, res) => {
   logger.info(`GET: /user/room`);
 
   try {
@@ -92,7 +92,7 @@ export const userChat = asyncHandler(async (req, res) => {
     rmtUser.fname = cap(rmtUser.fname);
     rmtUser.lname = cap(rmtUser.lname);
 
-    dlog(stringify(rmtUser));
+    // dlog(stringify(rmtUser));
 
     res.render("user/room", {
       title: "Room",
@@ -192,10 +192,10 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 //  @desc           Video Chat
-//  @route          POST /user/chat
+//  @route          POST /user/room
 //  @access         Private
 export const joinRoom = asyncHandler(async (req, res) => {
-  logger.info(`POST: /user/chat`);
+  logger.info(`POST: /user/room`);
   const user = req.user.withoutPassword();
 
   // return 400 if the request has an empty body or no roomName

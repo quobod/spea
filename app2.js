@@ -207,10 +207,10 @@ io.on("connection", (socket) => {
     const user = userManager.getUser(socket.id);
 
     if (user != null) {
-      console.log(`\n\tUser ${user.fname} ${user.lname} disconnected`);
+      dlog(`User ${user.fname} ${user.lname} disconnected`);
       userManager.removeUserById(user.socketId);
     } else {
-      console.log(`\n\tSocket user disconnected:\t${socket.id}`);
+      dlog(`Socket user disconnected:\t${socket.id}`);
       userManager.removeUserById(socket.id);
     }
 
@@ -222,21 +222,21 @@ io.on("connection", (socket) => {
     const { rmtUser } = data;
     const user = userManager.getUser(rmtUser);
 
-    log(`\n\tParticipant ${rmtUser} disconnected\n`);
+    dlog(`Participant ${rmtUser} disconnected\n`);
 
-    log(`\n\tUser Count: ${userManager.getUserCount()}\n`);
+    dlog(`User Count: ${userManager.getUserCount()}\n`);
   });
 
   socket.on("participant", (data) => {
     const { rmtId, participantIdentity, type } = data;
     const user = userManager.getUser(rmtId);
 
-    log(`\n\tSocketIO participant emitter invoked`);
+    dlog(`SocketIO participant emitter invoked`);
 
     if (user) {
-      log(`\n\tReceived participant identity`);
+      dlog(`Received participant identity`);
       user.participantIdentity = participantIdentity;
-      log(user);
+      dlog(user);
     }
   });
 
@@ -247,8 +247,8 @@ io.on("connection", (socket) => {
     const userReceiver = userManager.getUser(receiver);
 
     if (userSender && userReceiver) {
-      log(
-        `\n\t${userSender.fname} ${userSender.lname} is requesting a ${requestType} with ${userReceiver.fname}`
+      dlog(
+        `${userSender.fname} ${userSender.lname} is requesting a ${requestType} with ${userReceiver.fname} ${userReceiver.lname}`
       );
 
       io.to(receiver).emit("chatrequest", {
@@ -261,15 +261,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chataccepted", (data) => {
-    log(`\n\tChat request accepted ${stringify(data)}`);
+    dlog(`Chat request accepted ${stringify(data)}`);
   });
 
   socket.on("chatrejected", (data) => {
-    log(`\n\tChat request rejected ${stringify(data)}`);
+    dlog(`Chat request rejected ${stringify(data)}`);
   });
 
   socket.on("chatrequestnoresponse", (data) => {
-    log(`\n\tChat request no response ${stringify(data)}`);
+    dlog(`Chat request no response ${stringify(data)}`);
   });
 
   socket.on("getonlineusers", (objContainer) => {

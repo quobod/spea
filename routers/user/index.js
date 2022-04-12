@@ -5,7 +5,7 @@ import {
   viewUserProfile,
   userReauth,
   updateUserProfile,
-  userChat,
+  userRoom,
   joinRoom,
 } from "../../controllers/user/index.js";
 import { signedIn, reauthorize } from "../../middleware/AuthMiddleware.js";
@@ -19,6 +19,6 @@ user.route("/profile").get(reauthorize, viewUserProfile).post(userReauth);
 
 user.route("/profile/update").post(updateUserProfile);
 
-user.route("/chat").get(signedIn, userChat).post(signedIn, joinRoom);
+user.route("/room").get(signedIn, userRoom).post(signedIn, joinRoom);
 
 export default user;

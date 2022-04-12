@@ -56,7 +56,7 @@ export const updateUserList = (data) => {
         // appendChild(divContent, pFname);
         // appendChild(divContent, pLname);
         // appendChild(divContent, pEmail);
-        appendChild(divControls, videoIcon);
+        // appendChild(divControls, videoIcon);
         // appendChild(divControls, chatIcon);
 
         addAttribute(cell, "class", `cell small-12 medium-4`);
@@ -72,7 +72,7 @@ export const updateUserList = (data) => {
         addAttribute(
           divControls,
           "class",
-          "grid-x grid-margin-x small-up-1 medium-up-2"
+          "grid-x grid-margin-x grid-margin-y small-up-1 medium-up-2"
         );
         addAttribute(divControls, "style", "margin-bottom: 15px;");
         addAttribute(pFname, "class", "cell");
@@ -88,7 +88,7 @@ export const updateUserList = (data) => {
           "class",
           "cell fa-solid fa-comments fa-fw fa-2x"
         );
-        addAttribute(chatIcon, "id", `${item.uid}`);
+        addAttribute(chatIcon, "id", `${item.rmtId}`);
         addAttribute(img, "class", "fa-solid fa-user fa-fw fa-5x");
         addAttribute(img, "style", "width:100%;");
 
@@ -100,6 +100,10 @@ export const updateUserList = (data) => {
 
         // if (item.rmtId != rmtId) {
         if (item.hasCamera) {
+          appendChild(card, divControls);
+          appendChild(divControls, videoIcon);
+          appendChild(divControls, chatIcon);
+
           addClickHandler(videoIcon, (e) => {
             console.log(`\n\tRequesting video chat\n`);
             const data = {
@@ -120,6 +124,9 @@ export const updateUserList = (data) => {
           });
           cardDivider.innerHTML = `${item.fname}`;
         } else {
+          appendChild(card, divControls);
+          appendChild(divControls, chatIcon);
+
           addClickHandler(chatIcon, (e) => {
             const data = {
               sender: personalCode,
@@ -130,7 +137,6 @@ export const updateUserList = (data) => {
           });
           cardDivider.innerHTML = `${item.fname}`;
         }
-        appendChild(card, divControls);
         // }
       }
     });
