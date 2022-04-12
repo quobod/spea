@@ -29,7 +29,7 @@ export const signinUser = asyncHandler(async (req, res, next) => {
     return res.redirect("/auth/signin");
   } else {
     passport.authenticate("local", {
-      successRedirect: "/user/dashboard",
+      successRedirect: "/user",
       failureRedirect: "/auth/signin",
       failureFlash: true,
     })(req, res, next);
@@ -157,7 +157,7 @@ export const registerUser = (req, res, next) => {
     return res.redirect("/auth/register");
   } else {
     passport.authenticate("local-register", {
-      successRedirect: "/user/dashboard",
+      successRedirect: "/user",
       failureRedirect: "/auth/register",
       failureFlash: true,
     })(req, res, next);

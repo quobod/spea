@@ -3,7 +3,7 @@ import bunyan from "bunyan";
 import { body, check, validationResult } from "express-validator";
 import twilio from "twilio";
 import { customAlphabet } from "nanoid";
-import { cap, stringify, log } from "../../custom_modules/index.js";
+import { cap, stringify, dlog } from "../../custom_modules/index.js";
 import Contact from "../../models/Contacts.js";
 import User from "../../models/UserModel.js";
 import { create } from "../../custom_modules/captcha.js";
@@ -88,15 +88,18 @@ export const userChat = asyncHandler(async (req, res) => {
   logger.info(`GET: /user/room`);
 
   try {
-    const user = req.user.withoutPassword();
-    user.fname = cap(user.fname);
-    user.lname = cap(user.lname);
+    const rmtUser = req.user.withoutPassword();
+    rmtUser.fname = cap(rmtUser.fname);
+    rmtUser.lname = cap(rmtUser.lname);
+
+    dlog(stringify(rmtUser));
 
     res.render("user/room", {
-      title: "Chat",
-      rmtId: user._id,
+      title: "Room",
+      rmtId: rmtUser._id,
       room: true,
       user: true,
+      rmtUser,
     });
   } catch (err) {
     console.log(err);

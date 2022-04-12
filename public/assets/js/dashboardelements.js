@@ -10,6 +10,7 @@ export const rmtUserId = document.querySelector("#rmtuser");
 
 // Dialog
 export const dialog = document.querySelector("#dialog");
+export const closeButton = document.querySelector(".close-button") || null;
 
 // Page Links
 export const newContactLink = document.querySelector("#new-contact-link");

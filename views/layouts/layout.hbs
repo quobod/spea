@@ -58,15 +58,8 @@
 <script src="/assets/js/singlecontactelements.js" type="module"></script>
 <script src="/assets/js/singlecontactmain.js" type="module"></script>
 {{/if}}
+{{else}}
+<script src="/assets/js/main.js" type="module"></script>
 {{/if}}
-<script type="javascript">
-    // Messages
-    addHandler(elements.closeButton, "click", (e) => {
-    const target = e.target;
-    const parent = target.parentElement;
-    const grandParent = parent.parentElement;
-    grandParent.remove();
-    });
-</script>
 
 </html>

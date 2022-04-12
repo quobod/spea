@@ -64,7 +64,11 @@ export const updateUserList = (data) => {
         addAttribute(cardSection, "class", "card-section");
         addAttribute(cardDivider, "class", "card-divider");
         addAttribute(imgPlaceholder, "class", "card-image");
-        addAttribute(imgPlaceholder, "style", "text-align:center;");
+        addAttribute(
+          imgPlaceholder,
+          "style",
+          "text-align:center; margin:5px 0;"
+        );
         addAttribute(
           divControls,
           "class",
@@ -78,7 +82,7 @@ export const updateUserList = (data) => {
         addAttribute(pLname, "style", "margin:0;");
         addAttribute(pEmail, "style", "margin:0;");
         addAttribute(videoIcon, "class", "cell fa-solid fa-camera fa-fw fa-2x");
-        addAttribute(videoIcon, "id", `${item.uid}`);
+        addAttribute(videoIcon, "id", `${item.rmtId}`);
         addAttribute(
           chatIcon,
           "class",
@@ -97,6 +101,7 @@ export const updateUserList = (data) => {
         // if (item.rmtId != rmtId) {
         if (item.hasCamera) {
           addClickHandler(videoIcon, (e) => {
+            console.log(`\n\tRequesting video chat\n`);
             const data = {
               sender: personalCode,
               receiver: e.target.id,
@@ -113,7 +118,7 @@ export const updateUserList = (data) => {
             };
             requestChat(data);
           });
-          cardDivider.innerHTML = `${item.fname} ${item.lname}`;
+          cardDivider.innerHTML = `${item.fname}`;
         } else {
           addClickHandler(chatIcon, (e) => {
             const data = {
@@ -123,6 +128,7 @@ export const updateUserList = (data) => {
             };
             requestChat(data);
           });
+          cardDivider.innerHTML = `${item.fname}`;
         }
         appendChild(card, divControls);
         // }
