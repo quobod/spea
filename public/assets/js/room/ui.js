@@ -70,25 +70,26 @@ export const updateUserList = (data) => {
           "style",
           "text-align:center; margin:5px 0;"
         );
-        addAttribute(
-          divControls,
-          "class",
-          "grid-x grid-margin-x grid-margin-y small-up-1 medium-up-2"
-        );
-        addAttribute(divControls, "style", "margin-bottom: 15px;");
+        addAttribute(divControls, "class", "expanded row gutter-small");
         addAttribute(pFname, "class", "cell");
         addAttribute(pLname, "class", "cell");
         addAttribute(pEmail, "class", "cell");
         addAttribute(pFname, "style", "margin:0;");
         addAttribute(pLname, "style", "margin:0;");
         addAttribute(pEmail, "style", "margin:0;");
-        addAttribute(videoIcon, "class", "cell fa-solid fa-camera fa-fw fa-2x");
+        addAttribute(
+          videoIcon,
+          "class",
+          "colunms small-6 fa-solid fa-camera fa-fw fa-2x"
+        );
+        addAttribute(videoIcon, "style", "margin-left: 22%;margin-right:12%;");
         addAttribute(videoIcon, "id", `${item.rmtId}`);
         addAttribute(
           chatIcon,
           "class",
-          "cell fa-solid fa-comments fa-fw fa-2x"
+          "colunms small-6 fa-solid fa-comments fa-fw fa-2x"
         );
+        addAttribute(chatIcon, "style", "margin-left: 12%;margin-right:22%;");
         addAttribute(chatIcon, "id", `${item.rmtId}`);
         addAttribute(img, "class", "fa-solid fa-user fa-fw fa-5x");
         addAttribute(img, "style", "width:100%;");
