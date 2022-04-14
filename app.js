@@ -270,17 +270,23 @@ io.on("connection", (socket) => {
   socket.on("chataccepted", (data) => {
     dlog(`Chat request accepted ${stringify(data)}`);
     const { senderSocketId, receiverSocketId, type } = data;
+    const room = customAlphabet("abcdefghijklmnopqrstuvwxyz", 13);
+    const name = room();
 
     io.to(senderSocketId).emit("chatrequestaccepted", {
       senderSocketId,
       receiverSocketId,
       type,
+      roomName: name,
+      exists: false,
     });
 
     io.to(receiverSocketId).emit("chatrequestaccepted", {
       senderSocketId,
       receiverSocketId,
       type,
+      roomName: name,
+      exists: true,
     });
   });
 

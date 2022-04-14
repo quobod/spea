@@ -1,8 +1,10 @@
 #peers-list {
-  min-height: 580px;
-  max-height: 590px;
-  height: 500px;
+  height: 300px;
   overflow-y: scroll;
+}
+
+.card {
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar {

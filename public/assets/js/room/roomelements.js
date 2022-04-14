@@ -13,16 +13,11 @@ export const calloutParent = document.querySelector("#callout-parent");
 // Messages
 export const closeButton = document.querySelector(".close-button");
 
-// Peers
-export const peersList = document.querySelector("#peers-list");
-export const peersLink = document.querySelector("#peers-list-link");
-
 // Room elements
 export const rmtIdInput = document.querySelector("#rmtid-input");
 export const personalCode = document.querySelector("#personal-code");
 export const joinRoomInput = document.querySelector("#join-room-input");
 export const roomNameInput = document.querySelector("#room-name-input");
-export const hideMeCheckbox = document.querySelector("#hide-me-checkbox");
 
 // Room links
 export const settings = document.querySelector("#settings");

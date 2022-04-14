@@ -1,4 +1,4 @@
-import * as elements from "./roomelements.js";
+import * as elements from "./connectedpeersscriptelements.js";
 import {
   removeChildren,
   newElement,
@@ -21,13 +21,12 @@ export const updateUserList = (data) => {
     const userList = elements.peersList;
     const personalCode = elements.personalCode.value;
     const rmtId = elements.rmtIdInput.value;
+
     removeChildren(userList);
-    const grid = newElement("div");
-    appendChild(userList, grid);
-    addAttribute(grid, "class", "grid-x grid-margin-x align-center");
 
     data.forEach((item, index) => {
       if (!item.hide && item.rmtId != rmtId) {
+        // if (!item.hide) {
         const cell = newElement("div");
         const card = newElement("div");
         const cardSection = newElement("div");
@@ -35,15 +34,12 @@ export const updateUserList = (data) => {
         const imgPlaceholder = newElement("div");
         const divContent = newElement("div");
         const divControls = newElement("div");
-        const pFname = newElement("p");
-        const pLname = newElement("p");
-        const pEmail = newElement("p");
         const videoIcon = newElement("i");
         const chatIcon = newElement("i");
         const img = newElement("i");
 
         // Prepare card
-        appendChild(grid, cell);
+        appendChild(userList, cell);
         appendChild(cell, card);
         appendChild(card, cardDivider);
         appendChild(card, imgPlaceholder);
@@ -52,16 +48,8 @@ export const updateUserList = (data) => {
         appendChild(card, cardSection);
         appendChild(cardSection, divContent);
 
-        // Prepare card content
-        // appendChild(divContent, pFname);
-        // appendChild(divContent, pLname);
-        // appendChild(divContent, pEmail);
-        // appendChild(divControls, videoIcon);
-        // appendChild(divControls, chatIcon);
-
-        addAttribute(grid, "class", "columns small-12");
-        addAttribute(cell, "class", `row`);
-        addAttribute(card, "class", "card columns small-12 medium-4");
+        addAttribute(cell, "class", `cell small-12 medium-4`);
+        addAttribute(card, "class", "card");
         addAttribute(cardSection, "class", "card-section");
         addAttribute(cardDivider, "class", "card-divider");
         addAttribute(imgPlaceholder, "class", "card-image");
@@ -70,35 +58,25 @@ export const updateUserList = (data) => {
           "style",
           "text-align:center; margin:5px 0;"
         );
-        addAttribute(divControls, "class", "expanded row gutter-small");
-        addAttribute(pFname, "class", "cell");
-        addAttribute(pLname, "class", "cell");
-        addAttribute(pEmail, "class", "cell");
-        addAttribute(pFname, "style", "margin:0;");
-        addAttribute(pLname, "style", "margin:0;");
-        addAttribute(pEmail, "style", "margin:0;");
+        addAttribute(
+          divControls,
+          "class",
+          "grid-x grid-margin-x grid-padding-y"
+        );
         addAttribute(
           videoIcon,
           "class",
-          "colunms small-6 fa-solid fa-camera fa-fw fa-2x"
+          "cell small-6 fa-solid fa-camera fa-fw fa-2x"
         );
-        addAttribute(videoIcon, "style", "margin-left: 22%;margin-right:12%;");
         addAttribute(videoIcon, "id", `${item.rmtId}`);
         addAttribute(
           chatIcon,
           "class",
-          "colunms small-6 fa-solid fa-comments fa-fw fa-2x"
+          "cell small-6 fa-solid fa-comments fa-fw fa-2x"
         );
-        addAttribute(chatIcon, "style", "margin-left: 12%;margin-right:22%;");
         addAttribute(chatIcon, "id", `${item.rmtId}`);
         addAttribute(img, "class", "fa-solid fa-user fa-fw fa-5x");
         addAttribute(img, "style", "width:100%;");
-
-        // cardDivider.innerHTML = `${item.fname} ${item.lname}`;
-        cardDivider.innerHTML = `${cap(item.fname)}`;
-        pEmail.innerHTML = `${item.email}`;
-        pFname.innerHTML = `${item.fname}`;
-        pLname.innerHTML = `${item.lname}`;
 
         // if (item.rmtId != rmtId) {
         if (item.hasCamera) {
@@ -124,7 +102,6 @@ export const updateUserList = (data) => {
             };
             requestChat(data);
           });
-          cardDivider.innerHTML = `${item.fname}`;
         } else {
           appendChild(card, divControls);
           appendChild(divControls, chatIcon);
@@ -137,9 +114,9 @@ export const updateUserList = (data) => {
             };
             requestChat(data);
           });
-          cardDivider.innerHTML = `${item.fname}`;
         }
-        // }
+
+        cardDivider.innerHTML = `<b>${cap(item.fname)}</b>`;
       }
     });
   }

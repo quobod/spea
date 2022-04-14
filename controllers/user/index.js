@@ -81,33 +81,6 @@ export const userDashboard = asyncHandler(async (req, res) => {
   }
 });
 
-//  @desc           User Room
-//  @route          GET /user/room
-//  @access         Private
-export const userRoom = asyncHandler(async (req, res) => {
-  logger.info(`GET: /user/room`);
-
-  try {
-    const rmtUser = req.user.withoutPassword();
-    rmtUser.fname = cap(rmtUser.fname);
-    rmtUser.lname = cap(rmtUser.lname);
-
-    // dlog(stringify(rmtUser));
-
-    res.render("user/room", {
-      title: "Room",
-      rmtId: rmtUser._id,
-      hasToken: false,
-      room: true,
-      user: true,
-      rmtUser,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(200).json({ status: JSON.stringify(err) });
-  }
-});
-
 //  @desc           View user's profile
 //  @route          GET /user/profile
 //  @access         Private
@@ -193,14 +166,14 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 //  @desc           Video Chat
-//  @route          GET /user/room/join
+//  @route          POST /user/room/join
 //  @access         Private
 export const joinRoom = asyncHandler(async (req, res) => {
   logger.info(`POST: /user/room/join`);
   const user = req.user.withoutPassword();
 
-  const { type } = req.body;
-  const roomName = nanoid();
+  const { type, roomName } = req.body;
+
   try {
     // find or create a room with the given roomName
     findOrCreateRoom(roomName);
@@ -210,13 +183,14 @@ export const joinRoom = asyncHandler(async (req, res) => {
 
     if (token) {
       res.render("user/room", {
-        title: "Room",
+        title: `${roomName}`,
         user: user,
         rmtId: user._id,
         room: true,
         hasToken: true,
         token,
-        roomName,
+        chatType: type,
+        room: roomName,
       });
     } else {
       console.log(`\n\tToken Failure`);
@@ -225,5 +199,46 @@ export const joinRoom = asyncHandler(async (req, res) => {
   } catch (err) {
     console.log(`\n\tjoinRoom error\n\t\t${err}\n`);
     return res.redirect("/user/dashboard");
+  }
+});
+
+//  @desc           Video Chat
+//  @route          GET /user/room/join/peer
+//  @access         Private
+export const joinAsPeer = asyncHandler(async (req, res) => {
+  logger.info(`GET: /user/room/join/peer`);
+  const user = req.user.withoutPassword();
+
+  res.render("user/room", {
+    user: user,
+    rmtId: user._id,
+    room: true,
+  });
+});
+
+//  @desc           User Room
+//  @route          GET /user/room
+//  @access         Private
+export const userRoom = asyncHandler(async (req, res) => {
+  logger.info(`GET: /user/room`);
+
+  try {
+    const rmtUser = req.user.withoutPassword();
+    rmtUser.fname = cap(rmtUser.fname);
+    rmtUser.lname = cap(rmtUser.lname);
+
+    // dlog(stringify(rmtUser));
+
+    res.render("user/connectedpeers", {
+      title: "Peers",
+      rmtId: rmtUser._id,
+      hasToken: false,
+      connectedpeers: true,
+      user: true,
+      rmtUser,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(200).json({ status: JSON.stringify(err) });
   }
 });

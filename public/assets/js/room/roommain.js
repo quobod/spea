@@ -401,9 +401,3 @@ const startRoom = () => {
 };
 
 startRoom();
-
-// Click Handlers
-
-addHandler(elements.hideMeCheckbox, "click", (e) => {
-  hideMe({ userId: rmtIdInput.value, show: e.target.checked });
-});

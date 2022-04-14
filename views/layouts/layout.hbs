@@ -33,12 +33,7 @@
     </p>
 </body>
 <link rel="stylesheet" href="/assets/css/peerlist.css">
-<link rel="stylesheet" href="/assets/css/controlpanel.css">
-<link rel="stylesheet" href="/assets/css/contact.css">
-<link rel="stylesheet" href="/assets/css/landing.css">
-<link rel="stylesheet" href="/assets/css/elements.css">
 <link rel="stylesheet" href="/assets/css/dialog.css">
-<link rel="stylesheet" href="/assets/css/containers.css">
 <script src="/assets/js/utils.js" type="module"></script>
 
 {{#if user}}
@@ -48,6 +43,9 @@
 <link rel="stylesheet" href="/assets/css/room/room.css">
 <script src="/twilio-video.js"></script>
 <script src="/assets/js/room/roommain.js" type="module"></script>
+{{/if}}
+{{#if connectedpeers}}
+<script src="/assets/js/room/connectedpeersscript.js" type="module"></script>
 {{/if}}
 {{#if dashboard}}
 <script src="/assets/js/dashboardelements.js" type="module"></script>

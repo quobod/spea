@@ -274,12 +274,14 @@ io.on("connection", (socket) => {
       senderSocketId,
       receiverSocketId,
       type,
+      sender: true,
     });
 
     io.to(receiverSocketId).emit("chatrequestaccepted", {
       senderSocketId,
       receiverSocketId,
       type,
+      sender: false,
     });
   });
 

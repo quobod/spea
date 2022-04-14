@@ -1,5 +1,6 @@
 import * as store from "./store.js";
 import * as elements from "./roomelements.js";
+import * as connectedpeerselements from "./connectedpeersscriptelements.js";
 import * as ui from "./ui.js";
 import {
   cls,
@@ -18,8 +19,8 @@ export const registerSocketEvents = (socket) => {
   socketIO = socket;
 
   socket.on("connect", () => {
-    elements.personalCode.value = socket.id;
-    ui.updatePersonalCode(socket.id);
+    connectedpeerselements.personalCode.value = socket.id;
+    // ui.updatePersonalCode(socket.id);
 
     console.log(`\n\tSuccessfully connected to socket.io server\n`);
   });
@@ -78,10 +79,11 @@ export const registerSocketEvents = (socket) => {
   });
 
   socket.on("chatrequestaccepted", (data) => {
-    const { senderSocketId, receiverSocketId, type } = data;
+    log(`\n\tchatrequestaccepted method data: ${stringify(data)}`);
+    const { senderSocketId, receiverSocketId, type, sender } = data;
     let xmlHttp;
 
-    try {
+    /* try {
       xmlHttp = new XMLHttpRequest();
 
       xmlHttp.open("POST", "/user/room/join");
@@ -95,12 +97,14 @@ export const registerSocketEvents = (socket) => {
         location.href = "/user/room/join";
       };
 
-      xmlHttp.send({ type: type });
+      xmlHttp.send(
+        `chatType=${type}&roomName=${roomName}&roomExists=${exists}`
+      );
     } catch (err) {
       log(err);
-      location.href = "/user/room/join";
+      // location.href = "/user/room/join";
       return;
-    }
+    } */
   });
 
   requestRegistration(socket);
