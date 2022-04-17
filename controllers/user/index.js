@@ -166,7 +166,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
   });
 });
 
-//  @desc           Video Chat
+//  @desc           Create room and token
 //  @route          POST /user/room/join
 //  @access         Private
 export const createRoomToken = asyncHandler(async (req, res) => {
