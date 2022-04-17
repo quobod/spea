@@ -6,7 +6,7 @@ import {
   userReauth,
   updateUserProfile,
   userRoom,
-  createRoom,
+  createRoomToken,
   joinAsPeer,
 } from "../../controllers/user/index.js";
 import { signedIn, reauthorize } from "../../middleware/AuthMiddleware.js";
@@ -22,7 +22,7 @@ user.route("/profile/update").post(updateUserProfile);
 
 user.route("/room").get(signedIn, userRoom);
 
-user.route("/room/create").post(signedIn, createRoom);
+user.route("/room/create").post(signedIn, createRoomToken);
 
 user.route("/room/join").get(signedIn, joinAsPeer);
 

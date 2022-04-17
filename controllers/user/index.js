@@ -169,7 +169,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 //  @desc           Video Chat
 //  @route          POST /user/room/join
 //  @access         Private
-export const createRoom = asyncHandler(async (req, res) => {
+export const createRoomToken = asyncHandler(async (req, res) => {
   logger.info(`POST: /user/room/create`);
   const user = req.user.withoutPassword();
 
