@@ -19,7 +19,9 @@ export const registerSocketEvents = (socket) => {
   socketIO = socket;
 
   socket.on("connect", () => {
-    connectedpeerselements.personalCode.value = socket.id;
+    if (connectedpeerselements.personalCode) {
+      connectedpeerselements.personalCode.value = socket.id;
+    }
     // ui.updatePersonalCode(socket.id);
 
     console.log(`\n\tSuccessfully connected to socket.io server\n`);
@@ -80,31 +82,53 @@ export const registerSocketEvents = (socket) => {
 
   socket.on("chatrequestaccepted", (data) => {
     log(`\n\tchatrequestaccepted method data: ${stringify(data)}`);
-    const { senderSocketId, receiverSocketId, type, sender } = data;
-    let xmlHttp;
+    const { senderSocketId, receiverSocketId, type, sender, roomName } = data;
+    let xmlHttp, token;
 
-    /* try {
+    if (sender) {
+      try {
+        xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open("POST", "/user/room/create");
+
+        xmlHttp.setRequestHeader(
+          "Content-type",
+          "application/x-www-form-urlencoded"
+        );
+
+        xmlHttp.onload = () => {
+          const responseText = xmlHttp.responseText;
+
+          if (responseText) {
+            // log(`\n\tResponse Text: ${stringify(responseText)}\n`);
+            const responseJson = parse(responseText);
+            token = responseJson.token;
+
+            location.href = `/user/room/join?token=${responseJson.token}&roomName=${roomName}`;
+          }
+        };
+
+        xmlHttp.send(
+          `chatType=${type}&roomName=${roomName}&roomExists=${true}`
+        );
+      } catch (err) {
+        log(err);
+        return;
+      }
+    } else {
       xmlHttp = new XMLHttpRequest();
 
-      xmlHttp.open("POST", "/user/room/join");
-
-      xmlHttp.setRequestHeader(
-        "Content-type",
-        "application/x-www-form-urlencoded"
-      );
-
       xmlHttp.onload = () => {
-        location.href = "/user/room/join";
+        location.href = `/user/room/join?token=${token}&roomName=${roomName}`;
       };
 
-      xmlHttp.send(
-        `chatType=${type}&roomName=${roomName}&roomExists=${exists}`
+      xmlHttp.open(
+        "GET",
+        `/user/room/join?token=${token}&roomName=${roomName}`
       );
-    } catch (err) {
-      log(err);
-      // location.href = "/user/room/join";
-      return;
-    } */
+
+      xmlHttp.send();
+    }
   });
 
   requestRegistration(socket);

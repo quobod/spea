@@ -3,7 +3,7 @@ import bunyan from "bunyan";
 import { body, check, validationResult } from "express-validator";
 import twilio from "twilio";
 import { customAlphabet } from "nanoid";
-import { cap, stringify, dlog } from "../../custom_modules/index.js";
+import { cap, stringify, dlog, log } from "../../custom_modules/index.js";
 import Contact from "../../models/Contacts.js";
 import User from "../../models/UserModel.js";
 import { create } from "../../custom_modules/captcha.js";
@@ -12,6 +12,7 @@ const logger = bunyan.createLogger({ name: "User Controller" });
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz", 13);
 const AccessToken = twilio.jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
+let nameOfRoom, token;
 
 const findOrCreateRoom = async (roomName) => {
   let twilioClient;
@@ -168,48 +169,54 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 //  @desc           Video Chat
 //  @route          POST /user/room/join
 //  @access         Private
-export const joinRoom = asyncHandler(async (req, res) => {
-  logger.info(`POST: /user/room/join`);
+export const createRoom = asyncHandler(async (req, res) => {
+  logger.info(`POST: /user/room/create`);
   const user = req.user.withoutPassword();
 
-  const { type, roomName } = req.body;
+  const { chatType, roomName, roomExists } = req.body;
 
   try {
     // find or create a room with the given roomName
     findOrCreateRoom(roomName);
+    nameOfRoom = roomName;
 
     // generate an Access Token for a participant in this room
-    const token = getAccessToken(roomName);
+    token = getAccessToken(roomName);
 
     if (token) {
-      res.render("user/room", {
-        title: `${roomName}`,
-        user: user,
-        rmtId: user._id,
-        room: true,
-        hasToken: true,
-        token,
-        chatType: type,
-        room: roomName,
-      });
+      dlog(`Created Token`);
+      return res.json({ token: token, status: true });
     } else {
-      console.log(`\n\tToken Failure`);
-      return res.redirect("/user/dashboard");
+      dog(`Token Failure`);
+      return res.json({ status: false, cause: `Failed to create token` });
     }
   } catch (err) {
-    console.log(`\n\tjoinRoom error\n\t\t${err}\n`);
-    return res.redirect("/user/dashboard");
+    dlog(`joinRoom error\n\t\t${stringify(err)}`);
+    return res.json({
+      status: false,
+      cause: `Server Error`,
+      detail: `user controller.createRoom method.`,
+      err,
+    });
   }
 });
 
 //  @desc           Video Chat
-//  @route          GET /user/room/join/peer
+//  @route          GET /user/room/join
 //  @access         Private
 export const joinAsPeer = asyncHandler(async (req, res) => {
-  logger.info(`GET: /user/room/join/peer`);
+  logger.info(`GET: /user/room/join`);
   const user = req.user.withoutPassword();
 
+  const { roomName } = req.query;
+
+  dlog(`Joining ${roomName} with token`);
+  log(`\n\tToken:\n\t\t${stringify(token)}`);
+
   res.render("user/room", {
+    hasToken: token ? true : false,
+    token,
+    roomName: nameOfRoom,
     user: user,
     rmtId: user._id,
     room: true,
