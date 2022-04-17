@@ -201,6 +201,40 @@ export const createRoomToken = asyncHandler(async (req, res) => {
   }
 });
 
+//  @desc           Access Token for existing room
+//  @route          POST /user/room/access/token/get
+//  @access         Private
+export const getRoomAccessToken = asyncHandler(async (req, res) => {
+  logger.info(`POST: /user/room/access/token/get`);
+  const user = req.user.withoutPassword();
+
+  const { roomName } = req.body;
+
+  try {
+    // find or create a room with the given roomName
+    const accessToken = getAccessToken(roomName);
+
+    if (accessToken) {
+      dlog(`Created Access Token`);
+      return res.json({ accessToken, status: true });
+    } else {
+      dlog(`Token Failure`);
+      return res.json({
+        status: false,
+        cause: `Failed to create access token`,
+      });
+    }
+  } catch (err) {
+    dlog(`getRoomAccessToken error\n\t\t${stringify(err)}`);
+    return res.json({
+      status: false,
+      cause: `${err}`,
+      detail: `user.controller.getRoomAccessToken method.`,
+      err,
+    });
+  }
+});
+
 //  @desc           Video Chat
 //  @route          GET /user/room/join
 //  @access         Private
