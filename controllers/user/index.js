@@ -260,6 +260,29 @@ export const joinAsPeer = asyncHandler(async (req, res) => {
   }
 });
 
+//  @desc           VEnter room
+//  @route          GET /user/room/enter
+//  @access         Private
+export const enterRoom = asyncHandler(async (req, res) => {
+  logger.info(`GET: /user/room/enter`);
+  const user = req.user.withoutPassword();
+
+  const { accessToken, roomName } = req.query;
+
+  if (accessToken && roomName) {
+    dlog(`Joining ${roomName} with token`);
+
+    res.render("user/room", {
+      hasToken: token ? true : false,
+      token: accessToken,
+      roomName: nameOfRoom,
+      user: user,
+      rmtId: user._id,
+      room: true,
+    });
+  }
+});
+
 //  @desc           User Room
 //  @route          GET /user/room
 //  @access         Private
