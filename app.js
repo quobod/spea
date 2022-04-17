@@ -24,12 +24,12 @@ import { create } from "./custom_modules/captcha.js";
 import adapter from "webrtc-adapter";
 import {
   log,
+  dlog,
   cls,
   successMessage,
   infoMessage,
   stringify,
   keys,
-  userManager,
   dbMessage,
 } from "./custom_modules/index.js";
 import landing from "./routers/home/index.js";
@@ -136,6 +136,7 @@ app.use(function (req, res, next) {
 });
 
 // Static assets
+app.use(express.static("node_modules/twilio-video/dist/"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/api/get-turn-credentials", (req, res) => {
