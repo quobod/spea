@@ -270,24 +270,25 @@ io.on("connection", (socket) => {
   socket.on("chataccepted", (data) => {
     dlog(`Chat request accepted ${stringify(data)}`);
     const { senderSocketId, receiverSocketId, type } = data;
-    const room = customAlphabet("abcdefghijklmnopqrstuvwxyz", 13);
-    const name = room();
+    const roomName = randomNameGenerator();
 
     io.to(senderSocketId).emit("chatrequestaccepted", {
       senderSocketId,
       receiverSocketId,
       type,
-      roomName: name,
-      exists: false,
+      sender: true,
+      roomName,
     });
 
-    io.to(receiverSocketId).emit("chatrequestaccepted", {
-      senderSocketId,
-      receiverSocketId,
-      type,
-      roomName: name,
-      exists: true,
-    });
+    setTimeout(() => {
+      io.to(receiverSocketId).emit("chatrequestaccepted", {
+        senderSocketId,
+        receiverSocketId,
+        type,
+        sender: false,
+        roomName,
+      });
+    }, [1202]);
   });
 
   socket.on("chatrejected", (data) => {
@@ -391,4 +392,9 @@ function letsencryptOptions(domain) {
     cert: fs.readFileSync(path + domain + "/cert.pem"),
     ca: fs.readFileSync(path + domain + "/chain.pem"),
   };
+}
+
+function randomNameGenerator() {
+  const randomGenerator = customAlphabet("abcdefghijklmnopqrstuvwxyz", 13);
+  return randomGenerator();
 }
