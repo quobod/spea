@@ -187,7 +187,7 @@ export const createRoom = asyncHandler(async (req, res) => {
       dlog(`Created Token`);
       return res.json({ token: token, status: true });
     } else {
-      dog(`Token Failure`);
+      dlog(`Token Failure`);
       return res.json({ status: false, cause: `Failed to create token` });
     }
   } catch (err) {
