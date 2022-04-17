@@ -201,7 +201,7 @@ export const createRoomToken = asyncHandler(async (req, res) => {
   }
 });
 
-//  @desc           Access Token for existing room
+//  @desc           Get access token for existing room
 //  @route          POST /user/room/access/token/get
 //  @access         Private
 export const getRoomAccessToken = asyncHandler(async (req, res) => {
