@@ -209,18 +209,18 @@ export const joinAsPeer = asyncHandler(async (req, res) => {
   const user = req.user.withoutPassword();
 
   const { roomName } = req.query;
+  if (token) {
+    dlog(`Joining ${roomName} with token`);
 
-  dlog(`Joining ${roomName} with token`);
-  log(`\n\tToken:\n\t\t${stringify(token)}`);
-
-  res.render("user/room", {
-    hasToken: token ? true : false,
-    token,
-    roomName: nameOfRoom,
-    user: user,
-    rmtId: user._id,
-    room: true,
-  });
+    res.render("user/room", {
+      hasToken: token ? true : false,
+      token,
+      roomName: nameOfRoom,
+      user: user,
+      rmtId: user._id,
+      room: true,
+    });
+  }
 });
 
 //  @desc           User Room
@@ -234,7 +234,7 @@ export const userRoom = asyncHandler(async (req, res) => {
     rmtUser.fname = cap(rmtUser.fname);
     rmtUser.lname = cap(rmtUser.lname);
 
-    // dlog(stringify(rmtUser));
+    dlog(`${rmtUser.fname} entered chat room`);
 
     res.render("user/connectedpeers", {
       title: "Peers",

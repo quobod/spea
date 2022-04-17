@@ -224,15 +224,12 @@ io.on("connection", (socket) => {
     const user = userManager.getUser(rmtUser);
 
     dlog(`Participant ${rmtUser} disconnected\n`);
-
-    dlog(`User Count: ${userManager.getUserCount()}\n`);
+    logPeers();
   });
 
   socket.on("participant", (data) => {
     const { rmtId, participantIdentity, type } = data;
     const user = userManager.getUser(rmtId);
-
-    dlog(`SocketIO participant emitter invoked`);
 
     if (user) {
       dlog(`Received participant identity`);
@@ -291,12 +288,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chatrejected", (data) => {
-    dlog(`Chat request rejected ${stringify(data)}`);
     const { senderSocketId, receiverSocketId } = data;
 
     const userReceiver = userManager.getUser(receiverSocketId);
 
     if (userReceiver) {
+      dlog(`${userReceier.fname} rejected call request`);
       io.to(senderSocketId).emit("chatrejected", {
         response: "rejected",
         receiver: userReceiver,
@@ -305,12 +302,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chatrequestnoresponse", (data) => {
-    dlog(`Chat request no response ${stringify(data)}`);
     const { senderSocketId, receiverSocketId } = data;
 
     const userReceiver = userManager.getUser(receiverSocketId);
 
     if (userReceiver) {
+      dlog(`${userReceiver} did not respond to chat request`);
       io.to(senderSocketId).emit("noresponse", {
         response: "noresponse",
         receiver: userReceiver,
@@ -325,9 +322,9 @@ io.on("connection", (socket) => {
 
 server.listen(PORT, "0.0.0.0", () => {
   cls();
-  log(
+  dlog(
     successMessage(
-      `\n\t\tServer listening on *:${PORT}\n\t\tServer Address: ${server._connectionKey}\n\n`
+      `Server listening on *:${PORT}\n\t\tServer Address: ${server._connectionKey}`
     )
   );
 });
@@ -381,8 +378,8 @@ async function registerMe(userData, done) {
       }
     })
     .catch((err) => {
-      log(`\n\tError in the registerMe method`);
-      log(err);
+      dlog(`\n\tError in the registerMe method`);
+      dlog(err);
     });
 }
 

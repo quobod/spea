@@ -5,6 +5,7 @@ import {
   isObject,
   isNull,
   log,
+  dlog,
   stringify,
 } from "./index.js";
 
@@ -21,26 +22,24 @@ class UserManager {
           if (!this.getUserById(rmtId)) {
             this.users.push({ ...data, hide: false });
 
-            log(
-              successStatus(
-                `\n\tAdded new user ${stringify(this.getUser(rmtId))}`
-              )
+            dlog(
+              successStatus(`Added new user ${stringify(this.getUser(rmtId))}`)
             );
             return { status: true };
           } else {
-            log(warningStatus(`\n\tUser already registered`));
+            dlog(warningStatus(`User already registered`));
             return { status: false, cause: "User is already registered" };
           }
         } else {
-          log(warningStatus(`\n\tObject is missing rmtId property`));
+          dlog(warningStatus(`Object is missing rmtId property`));
           return { status: false, cause: "Object is missing rmtId property" };
         }
       } else {
-        log(warningStatus(`\n\tExpecting an Object not an Array`));
+        dlog(warningStatus(`Expecting an Object not an Array`));
         return { status: false, cause: "Expecting an Object not an Array" };
       }
     } else {
-      log(warningStatus(`\n\tParameter null or undefined`));
+      dlog(warningStatus(`Parameter null or undefined`));
       return { status: false, cause: "Parameter null or undefined" };
     }
   };
@@ -65,7 +64,7 @@ class UserManager {
         let user = this.users[userIndex];
 
         user = Object.assign(user, objArg);
-        log(successStatus(`\n\tUser successfully updated`));
+        dlog(successStatus(`User successfully updated`));
         return true;
       }
     }
