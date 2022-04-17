@@ -119,13 +119,10 @@ export const registerSocketEvents = (socket) => {
       xmlHttp = new XMLHttpRequest();
 
       xmlHttp.onload = () => {
-        location.href = `/user/room/join?token=${token}&roomName=${roomName}`;
+        location.href = `/user/room/join?roomName=${roomName}`;
       };
 
-      xmlHttp.open(
-        "GET",
-        `/user/room/join?token=${token}&roomName=${roomName}`
-      );
+      xmlHttp.open("GET", `/user/room/join?roomName=${roomName}`);
 
       xmlHttp.send();
     }
