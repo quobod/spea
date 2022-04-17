@@ -207,6 +207,7 @@ export const createRoom = asyncHandler(async (req, res) => {
 export const joinAsPeer = asyncHandler(async (req, res) => {
   logger.info(`GET: /user/room/join`);
   const user = req.user.withoutPassword();
+  const accessToken = getAccessToken(req.query.roomName);
 
   const { roomName } = req.query;
   if (token) {
@@ -214,7 +215,7 @@ export const joinAsPeer = asyncHandler(async (req, res) => {
 
     res.render("user/room", {
       hasToken: token ? true : false,
-      token,
+      token: accessToken,
       roomName: nameOfRoom,
       user: user,
       rmtId: user._id,
