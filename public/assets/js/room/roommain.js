@@ -111,7 +111,7 @@ const handleRemoteParticipants = (participant) => {
   addAttribute(participantDiv, "id", participant.identity);
 
   // Add styling attributes
-  addAttribute(participantDiv, "class", "remote-video cell small-12");
+  addAttribute(participantParent, "class", "remote-video cell small-12");
   addAttribute(recordIcon, "class", "fa-solid fa-circle fa-2x");
   addAttribute(stopIcon, "class", "fa-solid fa-stop fa-2x");
   addAttribute(content, "class", "grid-x");

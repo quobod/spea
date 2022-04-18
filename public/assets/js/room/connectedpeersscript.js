@@ -1,5 +1,5 @@
 import * as elements from "./connectedpeersscriptelements.js";
-import { addClickHandler } from "../utils.js";
+import { addClickHandler, log } from "../utils.js";
 import {
   updateSocketUser,
   registerSocketEvents,

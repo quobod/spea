@@ -23,17 +23,17 @@ export const signinUser = asyncHandler(async (req, res, next) => {
   const captcha = create({ cookie: captchaId });
   const captchaValid = captcha.check(req, req.body[captchaFieldName]);
 
-  if (!captchaValid) {
+  /* if (!captchaValid) {
     console.log(`\n\tCaptcha Invalid`);
     req.flash("error_msg", "Captcha Invalid");
     return res.redirect("/auth/signin");
-  } else {
-    passport.authenticate("local", {
-      successRedirect: "/user",
-      failureRedirect: "/auth/signin",
-      failureFlash: true,
-    })(req, res, next);
-  }
+  } else { */
+  passport.authenticate("local", {
+    successRedirect: "/user",
+    failureRedirect: "/auth/signin",
+    failureFlash: true,
+  })(req, res, next);
+  // }
 });
 
 // @desc        User Signin
@@ -52,8 +52,8 @@ export const userSignin = asyncHandler(async (req, res) => {
       title: "Signin",
       csrfToken: req.csrfToken,
       signin: true,
-      imgsrc: captchaUrl,
-      captchaFieldName,
+      // imgsrc: captchaUrl,
+      // captchaFieldName,
     });
   } catch (err) {
     logger.error(err);
