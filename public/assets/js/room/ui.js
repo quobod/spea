@@ -119,7 +119,7 @@ export const createChatRequestCallout = (
   handleChatReject,
   handleChatRequestNoResponse
 ) => {
-  const { sender, type } = userDetails;
+  const { sender, requestType } = userDetails;
   const messageCallout = newElement("div");
   const messageBody = newElement("div");
   const controlsDiv = newElement("div");
@@ -149,9 +149,9 @@ export const createChatRequestCallout = (
   rejectButton.innerHTML = "Reject";
   acceptButton.innerHTML = "Accept";
   span.innerHTML = `&times;`;
-  message.innerHTML = `${cap(sender.fname)} ${cap(sender.lname)} wants to ${
-    type == "VIDEO_CHAT" ? "video chat" : "text chat"
-  } with you`;
+  message.innerHTML = `${cap(sender.fname)} ${cap(
+    sender.lname
+  )} wants to ${requestType} with you`;
 
   // Append elements
   appendChild(messageCallout, message);

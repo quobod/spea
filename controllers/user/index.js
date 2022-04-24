@@ -270,6 +270,7 @@ export const joinAsPeer = asyncHandler(async (req, res) => {
       token: `${accessToken}`,
       roomName: nameOfRoom,
       videoChat: videoChat,
+      chatType: `${chatType.toLowerCase()}`,
       user: user,
       rmtId: user._id,
       room: true,

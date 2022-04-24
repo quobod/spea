@@ -98,7 +98,7 @@ export const registerSocketEvents = (socket) => {
 
         xmlHttp.onload = () => {
           const responseText = xmlHttp.responseText;
-          chatType;
+
           if (responseText) {
             if (responseText.status) {
               log(`\n\tResponse Text: ${stringify(responseText)}\n`);
