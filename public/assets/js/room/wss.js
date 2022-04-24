@@ -150,7 +150,7 @@ export const updateSocketUser = (data = null) => {
 
 export const participantDisconnected = (data = null) => {
   if (null != data) {
-    log(data);
+    log(`\n\tParticiptant disconnected : ${stringify(data)}`);
     socketIO.emit("participantdisconnected", data);
   }
 };
