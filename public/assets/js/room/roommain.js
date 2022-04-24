@@ -20,7 +20,12 @@ import {
   participantDisconnected,
 } from "./wss.js";
 import * as elements from "./roomelements.js";
-import { muteMicrophone, muteCamera, recordVideo } from "./mediacontrols.js";
+import {
+  muteMicrophone,
+  muteCamera,
+  recordVideo,
+  disconnect,
+} from "./mediacontrols.js";
 
 // init socket connection
 const socket = io("/");
@@ -46,16 +51,41 @@ const rmtIdInput = document.querySelector("#rmtid-input");
 const chatTypeInput = document.querySelector("#chat-type-input");
 const localVideo = document.querySelector("#local-part");
 const remoteVideo = document.querySelector("#remote-parts");
+
+const roomName = roomNameInput.value;
+const token = joinRoomInput.value;
+const chatType = chatTypeInput.value;
+
 let connected,
   mediaTracks = [];
 
-const joinVideoRoom = async (roomName, token) => {
+/* const joinVideoRoom = async (roomName, token) => {
   // join the video room with the Access Token and the given room name
   const room = await Twilio.Video.connect(token, {
     room: roomName,
     audio: true,
     video: { width: 640 },
   });
+  return room;
+}; */
+
+const joinVideoRoom = async (roomName, token, connectionType) => {
+  // join the video room with the Access Token and the given room name
+  let room;
+
+  if (connectionType.toLowerCase().trim() == "video_chat") {
+    room = await Twilio.Video.connect(token, {
+      room: roomName,
+      audio: true,
+      video: { width: 640 },
+    });
+  } else {
+    room = await Twilio.Video.connect(token, {
+      room: roomName,
+      audio: true,
+      video: false,
+    });
+  }
   return room;
 };
 
@@ -236,11 +266,16 @@ const handleLocalParticipant = (participant) => {
   appendChild(content, participantParent);
   appendChild(content, controlsPanel);
   appendChild(controlsPanel, controls);
-  appendChild(controls, videoIcon);
-  appendChild(controls, microphoneIcon);
   appendChild(controls, disconnectIcon);
-  appendChild(controls, recordIcon);
-  appendChild(controls, stopIcon);
+
+  if (chatTypeInput.value.toLowerCase().trim() == "video_chat") {
+    appendChild(controls, videoIcon);
+    appendChild(controls, microphoneIcon);
+    appendChild(controls, recordIcon);
+    appendChild(controls, stopIcon);
+  } else {
+    appendChild(controls, microphoneIcon);
+  }
 
   // iterate through the participant's published tracks and
   // call `handleTrackPublication` on them
@@ -325,6 +360,11 @@ const handleLocalParticipant = (participant) => {
     }
   });
 
+  addClickHandler(disconnectIcon, (e) => {
+    disconnect(connected);
+    location.href = "/user/room";
+  });
+
   addClickHandler(videoIcon, (e) => {
     const muted = muteCamera(connected, true);
     const videoElement = getElement("local-video-camera");
@@ -369,14 +409,12 @@ const handleLocalParticipant = (participant) => {
 
 const startRoom = () => {
   if (roomNameInput && joinRoomInput) {
-    const roomName = roomNameInput.value;
-    const token = joinRoomInput.value;
-
     // log(twl);
     log(`\n\tWelcome to the video room\n`);
     log(`\n\tJoining room ${cap(roomName)} with token\n`);
+    log(`\n\tChat type is ${chatType}`);
 
-    joinVideoRoom(roomName, token)
+    joinVideoRoom(roomName, token, chatType)
       .then((room) => {
         connected = room;
         handleLocalParticipant(room.localParticipant);

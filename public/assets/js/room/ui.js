@@ -35,7 +35,7 @@ export const updateUserList = (data) => {
         const divControls = newElement("div");
         const imgPlaceholder = newElement("i");
         const videoIcon = newElement("i");
-        const chatIcon = newElement("i");
+        const phoneIcon = newElement("i");
         const paraPeerName = newElement("p");
 
         // Append Componenets
@@ -63,8 +63,8 @@ export const updateUserList = (data) => {
         // addAttribute(divControls, "class", "grid-container full");
         addAttribute(videoIcon, "class", "fa-solid fa-video fa-fw fa-2x");
         addAttribute(videoIcon, "id", `${item.rmtId}`);
-        addAttribute(chatIcon, "class", "fas fa-comment fa-fw fa-2x");
-        addAttribute(chatIcon, "id", `${item.rmtId}`);
+        addAttribute(phoneIcon, "class", "fa-solid fa-phone fa-fw fa-2x");
+        addAttribute(phoneIcon, "id", `${item.rmtId}`);
         addAttribute(paraPeerName, "class", "lead");
 
         // Add innerHTML
@@ -75,7 +75,7 @@ export const updateUserList = (data) => {
         // if (item.rmtId != rmtId) {
         if (item.hasCamera) {
           appendChild(divControls, videoIcon);
-          appendChild(divControls, chatIcon);
+          appendChild(divControls, phoneIcon);
 
           addClickHandler(videoIcon, (e) => {
             console.log(`\n\tRequesting video chat\n`);
@@ -87,19 +87,19 @@ export const updateUserList = (data) => {
             requestChat(data);
           });
 
-          addClickHandler(chatIcon, (e) => {
+          addClickHandler(phoneIcon, (e) => {
             const data = {
               sender: personalCode,
               receiver: e.target.id,
-              requestType: chatType.TEXT_CHAT,
+              requestType: chatType.VOICE_CHAT,
             };
             requestChat(data);
           });
         } else {
           appendChild(divControls);
-          appendChild(divControls, chatIcon);
+          appendChild(divControls, phoneIcon);
 
-          addClickHandler(chatIcon, (e) => {
+          addClickHandler(phoneIcon, (e) => {
             const data = {
               sender: personalCode,
               receiver: e.target.id,

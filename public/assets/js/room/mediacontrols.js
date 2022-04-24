@@ -44,6 +44,8 @@ export const shareScreen = () => {};
 
 export const snapPicture = () => {};
 
+export const disconnect = (connected) => connected.disconnect();
+
 function unmuteLocalMicrophone(connected) {
   localMicrophoneMuted = false;
   log(`\n\tLocal Participant has unmuted microphone`);

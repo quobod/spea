@@ -1,6 +1,7 @@
 export const chatType = {
   TEXT_CHAT: "TEXT_CHAT",
   VIDEO_CHAT: "VIDEO_CHAT",
+  VOICE_CHAT: "VOICE_CHAT",
 };
 
 export const responseType = {
