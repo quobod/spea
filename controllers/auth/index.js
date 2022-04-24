@@ -71,18 +71,18 @@ export const userSignin = asyncHandler(async (req, res) => {
 export const userRegister = asyncHandler(async (req, res) => {
   logger.info(`GET: /auth/register`);
 
-  const captchaUrl = "../../captcha.jpg";
+  /* const captchaUrl = "../../captcha.jpg";
   const captchaId = "captcha";
   const captchaFieldName = "captcha";
-  const captcha = create({ cookie: captchaId });
+  const captcha = create({ cookie: captchaId }); */
 
   try {
     res.render("auth/register", {
       title: "Register",
       csrfToken: req.csrfToken,
       signup: true,
-      imgsrc: captchaUrl,
-      captchaFieldName,
+      // imgsrc: captchaUrl,
+      // captchaFieldName,
     });
   } catch (err) {
     logger.error(err);

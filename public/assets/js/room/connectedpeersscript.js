@@ -19,9 +19,6 @@ start();
 
 addEventListener("beforeunload", (event) => {
   log(`\n\tBefore unload\n`);
-  // const rmtUserId = elements.rmtIdInput.value;
-  // const data = { rmtUser: rmtUserId };
-  // socket.emit("disconnectme", data);
 });
 
 // Click Handlers

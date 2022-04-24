@@ -175,7 +175,7 @@ function requestRegistration(socket) {
       }
 
       socketIO.emit("registerme", data);
-    }, 1200);
+    }, 700);
   }
 }
 

@@ -107,10 +107,10 @@ export const viewUserProfile = asyncHandler(async (req, res) => {
 export const userReauth = asyncHandler(async (req, res) => {
   logger.info(`POST: /user/reauth`);
 
-  const captchaId = "captcha";
+  /*  const captchaId = "captcha";
   const captchaFieldName = "captcha";
   const captcha = create({ cookie: captchaId });
-  const captchaValid = captcha.check(req, req.body[captchaFieldName]);
+  const captchaValid = captcha.check(req, req.body[captchaFieldName]); */
 
   const oUser = req.user;
   const { email, pwd } = req.body;
@@ -119,11 +119,7 @@ export const userReauth = asyncHandler(async (req, res) => {
   );
 
   const matched = await oUser.matchPassword(pwd);
-  if (!captchaValid) {
-    console.log(`\n\tCaptcha Invalid`);
-    req.flash("error_msg", "Captcha Invalid");
-    return res.redirect("/user/dashboard");
-  } else if (matched) {
+  if (matched) {
     res.render("user/profile", {
       title: `Profile`,
       user: req.user,
