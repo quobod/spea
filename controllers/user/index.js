@@ -260,6 +260,7 @@ export const joinAsPeer = asyncHandler(async (req, res) => {
   }
 });
 
+// TODO: replace joinAsPeer
 //  @desc           VEnter room
 //  @route          GET /user/room/enter
 //  @access         Private
@@ -267,9 +268,11 @@ export const enterRoom = asyncHandler(async (req, res) => {
   logger.info(`GET: /user/room/enter`);
   const user = req.user.withoutPassword();
 
-  const { accessToken, roomName } = req.query;
+  const { roomName } = req.query;
 
-  if (accessToken && roomName) {
+  const accessToken = getAccessToken(roomName);
+
+  if (accessToken) {
     dlog(`Joining ${roomName} with token`);
 
     res.render("user/room", {

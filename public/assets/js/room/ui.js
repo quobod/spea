@@ -26,61 +26,54 @@ export const updateUserList = (data) => {
 
     data.forEach((item, index) => {
       if (!item.hide && item.rmtId != rmtId) {
+        // console.log(`\n\tItem: ${JSON.stringify(item)}\n\n`);
         // if (!item.hide) {
         const cell = newElement("div");
         const card = newElement("div");
-        const cardSection = newElement("div");
-        const cardDivider = newElement("div");
-        const imgPlaceholder = newElement("div");
-        const divContent = newElement("div");
+        const cardDividerHeader = newElement("div");
+        const thumbnail = newElement("div");
         const divControls = newElement("div");
+        const imgPlaceholder = newElement("i");
         const videoIcon = newElement("i");
         const chatIcon = newElement("i");
-        const img = newElement("i");
+        const paraPeerName = newElement("p");
 
-        // Prepare card
+        // Append Componenets
         appendChild(userList, cell);
         appendChild(cell, card);
-        appendChild(card, cardDivider);
-        appendChild(card, imgPlaceholder);
-        appendChild(imgPlaceholder);
-        appendChild(imgPlaceholder, img);
-        appendChild(card, cardSection);
-        appendChild(cardSection, divContent);
+        appendChild(card, cardDividerHeader);
+        // appendChild(card, cardSectionContent);
+        appendChild(card, thumbnail);
+        appendChild(card, divControls);
+        appendChild(cardDividerHeader, paraPeerName);
+        appendChild(thumbnail, imgPlaceholder);
 
-        addAttribute(cell, "class", `cell small-12 medium-4`);
+        // Add Attributes
+        addAttribute(cell, "class", `cell`);
         addAttribute(card, "class", "card");
-        addAttribute(cardSection, "class", "card-section");
-        addAttribute(cardDivider, "class", "card-divider");
-        addAttribute(imgPlaceholder, "class", "card-image");
+        addAttribute(cardDividerHeader, "class", "card-divider");
+        addAttribute(thumbnail, "class", "card-section grid-x grid-padding-x");
+        addAttribute(divControls, "class", "card-divider");
+        addAttribute(thumbnail, "class", "grid-x grid-padding-x align-center");
         addAttribute(
           imgPlaceholder,
-          "style",
-          "text-align:center; margin:5px 0;"
-        );
-        addAttribute(
-          divControls,
           "class",
-          "grid-x grid-margin-x grid-padding-y"
+          "fa-solid fa-user fa-fw fa-3x cell small-12"
         );
-        addAttribute(
-          videoIcon,
-          "class",
-          "cell small-6 fa-solid fa-camera fa-fw fa-2x"
-        );
+        // addAttribute(divControls, "class", "grid-container full");
+        addAttribute(videoIcon, "class", "fa-solid fa-video fa-fw fa-2x");
         addAttribute(videoIcon, "id", `${item.rmtId}`);
-        addAttribute(
-          chatIcon,
-          "class",
-          "cell small-6 fa-solid fa-comments fa-fw fa-2x"
-        );
+        addAttribute(chatIcon, "class", "fas fa-comment fa-fw fa-2x");
         addAttribute(chatIcon, "id", `${item.rmtId}`);
-        addAttribute(img, "class", "fa-solid fa-user fa-fw fa-5x");
-        addAttribute(img, "style", "width:100%;");
+        addAttribute(paraPeerName, "class", "lead");
+
+        // Add innerHTML
+        /* videoIcon.innerHTML = `<b>Video Chat</b>`;
+        chatIcon.innerHTML = `<b>Text Chat</b>`; */
+        paraPeerName.innerHTML = `<b>${cap(item.fname)}</b>`;
 
         // if (item.rmtId != rmtId) {
         if (item.hasCamera) {
-          appendChild(card, divControls);
           appendChild(divControls, videoIcon);
           appendChild(divControls, chatIcon);
 
@@ -103,7 +96,7 @@ export const updateUserList = (data) => {
             requestChat(data);
           });
         } else {
-          appendChild(card, divControls);
+          appendChild(divControls);
           appendChild(divControls, chatIcon);
 
           addClickHandler(chatIcon, (e) => {
@@ -115,8 +108,6 @@ export const updateUserList = (data) => {
             requestChat(data);
           });
         }
-
-        cardDivider.innerHTML = `<b>${cap(item.fname)}</b>`;
       }
     });
   }
@@ -143,17 +134,13 @@ export const createChatRequestCallout = (
   addAttribute(messageCallout, "class", "callout primary small");
   addAttribute(messageCallout, "data-closable", "");
   addAttribute(closeButton, "class", "close-button");
-  addAttribute(closeButton, "aria-label", "");
+  addAttribute(closeButton, "aria-label", "Dismiss alert");
   addAttribute(closeButton, "type", "button");
   addAttribute(closeButton, "data-close", "");
   addAttribute(span, "aria-hidden", "true");
-  addAttribute(
-    controlsDiv,
-    "class",
-    "grid-x grid-margin-x align-center small-12 medium-up-6"
-  );
-  addAttribute(rejectButton, "class", "cell button alert");
-  addAttribute(acceptButton, "class", "cell button success");
+  addAttribute(controlsDiv, "class", "grid-x grid-margin-x align-center");
+  addAttribute(rejectButton, "class", "cell auto button alert");
+  addAttribute(acceptButton, "class", "cell auto button success");
   // addAttribute(rejectButton, "style", "width:45%; margin-right:5px;");
   // addAttribute(acceptButton, "style", "width:45%;margin-left:5px;");
   addAttribute(message, "style", "font-size:1.5rem;font-weight:bolder;");

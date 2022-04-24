@@ -1,0 +1,13 @@
+.grid-container {
+  display: grid;
+  justify-content: center;
+  justify-self: center;
+  justify-items: stretch;
+}
+
+.aria-hidden {
+  font-size: 1.2rem;
+  font-weight: bolder;
+  margin: 10px;
+  color: black;
+}

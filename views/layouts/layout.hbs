@@ -6,28 +6,22 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{{title}}}</title>
-    <script src="https://kit.fontawesome.com/60b813df03.js" crossorigin="anonymous" type="javascript"></script>
-
-
-    <link rel="stylesheet" href="/assets/css/foundation_/all.css">
-
-    <link rel="stylesheet" href="/assets/css/foundation_/foundation.css">
+    <link rel="stylesheet" href="/css/foundation.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/assets/css/all.css">
 </head>
 
 <body>
     {{>menu}}
     {{>messages}}
 
-    <main class="grid-container fluid main">
+    <div class="grid-container full" style="margin:20px;">
         {{{body}}}
-    </main>
-    <script src="/assets/js/vendor/jquery.js" type="javascript"></script>
-    <script src="/assets/js/vendor/foundation.js" type="javascript"></script>
-    <script type="javascript">
-         $(document).ready(function() {
-            $(document).foundation();
-         })       
-    </script>
+    </div>
+    <script src="/js/vendor/jquery.js" type="javascript"></script>
+    <script src="/js/vendor/what-input.js" type="javascript"></script>
+    <script src="/js/vendor/foundation.js" type="javascript"></script>
+    <script src="/js/app.js" type="javascript"></script>
     <p class="lead float-center" style="margin:0;padding:20px;text-algin:center;bottom:10px;">
         &copy; RMedia Technology
     </p>

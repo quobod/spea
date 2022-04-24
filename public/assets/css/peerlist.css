@@ -1,12 +1,35 @@
 #peers-list {
-  height: 300px;
   overflow-y: scroll;
+  height: 100%;
 }
 
 .card {
   border-radius: 10px;
 }
 
+.card-divider,
+.card-section {
+  justify-content: space-evenly;
+  justify-items: center;
+  justify-self: center;
+  align-items: center;
+}
+
+.lead {
+  text-align: center;
+}
+
 ::-webkit-scrollbar {
   backface-visibility: hidden;
+  background: transparent;
+}
+
+@media screen and (max-width: 400px) {
+  .card-divider,
+  .card-section {
+    justify-content: space-between;
+    justify-items: center;
+    justify-self: center;
+    align-items: center;
+  }
 }

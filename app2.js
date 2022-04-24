@@ -293,7 +293,7 @@ io.on("connection", (socket) => {
     const userReceiver = userManager.getUser(receiverSocketId);
 
     if (userReceiver) {
-      dlog(`${userReceier.fname} rejected call request`);
+      dlog(`${userReceiver.fname} rejected call request`);
       io.to(senderSocketId).emit("chatrejected", {
         response: "rejected",
         receiver: userReceiver,
