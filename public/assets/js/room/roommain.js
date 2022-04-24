@@ -43,6 +43,7 @@ addEventListener("beforeunload", (event) => {
 const roomNameInput = document.querySelector("#room-name-input");
 const joinRoomInput = document.querySelector("#join-room-input");
 const rmtIdInput = document.querySelector("#rmtid-input");
+const chatTypeInput = document.querySelector("#chat-type-input");
 const localVideo = document.querySelector("#local-part");
 const remoteVideo = document.querySelector("#remote-parts");
 let connected,

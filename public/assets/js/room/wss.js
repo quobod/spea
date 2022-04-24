@@ -83,7 +83,7 @@ export const registerSocketEvents = (socket) => {
   socket.on("chatrequestaccepted", (data) => {
     log(`\n\tchatrequestaccepted method data: ${stringify(data)}`);
     const { senderSocketId, receiverSocketId, type, sender, roomName } = data;
-    let xmlHttp, token;
+    let xmlHttp, token, chatType;
 
     if (sender) {
       try {
@@ -98,21 +98,19 @@ export const registerSocketEvents = (socket) => {
 
         xmlHttp.onload = () => {
           const responseText = xmlHttp.responseText;
-
+          chatType;
           if (responseText) {
             if (responseText.status) {
-              // log(`\n\tResponse Text: ${stringify(responseText)}\n`);
+              log(`\n\tResponse Text: ${stringify(responseText)}\n`);
               const responseJson = parse(responseText);
               token = responseJson.token;
 
-              location.href = `/user/room/join?roomName=${roomName}`;
+              location.href = `/user/room/join?roomName=${roomName}&chatType=${type}`;
             }
           }
         };
 
-        xmlHttp.send(
-          `chatType=${type}&roomName=${roomName}&roomExists=${true}`
-        );
+        xmlHttp.send(`chatType=${type}&roomName=${roomName}`);
       } catch (err) {
         log(err);
         return;
@@ -121,10 +119,13 @@ export const registerSocketEvents = (socket) => {
       xmlHttp = new XMLHttpRequest();
 
       xmlHttp.onload = () => {
-        location.href = `/user/room/join?roomName=${roomName}`;
+        location.href = `/user/room/join?roomName=${roomName}&chatType=${type}`;
       };
 
-      xmlHttp.open("GET", `/user/room/join?roomName=${roomName}`);
+      xmlHttp.open(
+        "GET",
+        `/user/room/join?roomName=${roomName}&chatType=${type}`
+      );
 
       xmlHttp.send();
     }

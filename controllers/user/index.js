@@ -173,7 +173,11 @@ export const createRoomToken = asyncHandler(async (req, res) => {
   logger.info(`POST: /user/room/create`);
   const user = req.user.withoutPassword();
 
-  const { chatType, roomName, roomExists } = req.body;
+  const { chatType, roomName } = req.body;
+
+  dlog(
+    `Creating room token\n\t\tChat Type: ${chatType} Room Name: ${roomName}`
+  );
 
   try {
     // find or create a room with the given roomName
@@ -185,7 +189,7 @@ export const createRoomToken = asyncHandler(async (req, res) => {
 
     if (token) {
       dlog(`Created Token`);
-      return res.json({ token: token, status: true });
+      return res.json({ token: token, status: true, chatType: chatType });
     } else {
       dlog(`Token Failure`);
       return res.json({ status: false, cause: `Failed to create token` });
@@ -242,17 +246,30 @@ export const joinAsPeer = asyncHandler(async (req, res) => {
   logger.info(`GET: /user/room/join`);
   const user = req.user.withoutPassword();
 
-  const { roomName } = req.query;
+  const { roomName, chatType } = req.query;
+
+  dlog(`Joining room data: ${stringify(req.query)}`);
 
   const accessToken = getAccessToken(roomName);
 
   if (accessToken) {
     dlog(`Joining ${roomName} with token`);
+    let videoChat;
+
+    switch (chatType.toLowerCase().trim()) {
+      case "video_chat":
+        videoChat = true;
+        break;
+
+      default:
+        videoChat = false;
+    }
 
     res.render("user/room", {
       hasToken: token ? true : false,
-      token: accessToken,
+      token: `${accessToken}`,
       roomName: nameOfRoom,
+      videoChat: videoChat,
       user: user,
       rmtId: user._id,
       room: true,

@@ -4,20 +4,37 @@
     {{#if hasToken}}
     <input type="hidden" id="join-room-input" value="{{token}}">
     <input type="hidden" id="room-name-input" value="{{roomName}}">
+    <input type="hidden" id="chat-type-input" value="{{chatType}}">
     {{/if}}
 
-    <div class="row">
-        <h2 class="columns small-12">
-            {{chatType}}
+    <div class="grid-x grid-margin-y align-center">
+
+        {{#if videoChat}}
+        <h2 class="cell small-12">
+            Video Chat
         </h2>
-        <div class="columns small-12">
-            <div class="grid-x" style="place-content:center;">
-                <div class="cell medium-6 small-12" id="local-part"></div>
-                <div class="cell medium-6 small-12" id="remote-parts"></div>
+        <div class="cell small-12">
+            <div class="grid-x small-up-12 medium-up-6 align-center">
+                <div class="cell" id="local-part"></div>
+                <div class="cell" id="remote-parts"></div>
             </div>
         </div>
 
-        <div class="columns small-12" id="controls"></div>
+        <div class="cell small-12" id="controls"></div>
+        {{else}}
+
+        <h2 class="cell small-12">
+            Text Chat
+        </h2>
+        <div class="cell small-12">
+            <div class="grid-x small-up-12 medium-up-6 align-center">
+                <div class="cell" id="local-part"></div>
+                <div class="cell" id="remote-parts"></div>
+            </div>
+        </div>
+
+        <div class="cell small-12" id="controls"></div>
+        {{/if}}
     </div>
 
 </div>
