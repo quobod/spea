@@ -19,7 +19,7 @@ class UserManager {
       if (isObject(data)) {
         if ("rmtId" in data) {
           const { rmtId } = data;
-          if (!this.getUserById(rmtId)) {
+          if (this.getUserById(rmtId) == null) {
             this.users.push({ ...data, hide: false });
 
             dlog(

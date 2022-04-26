@@ -61,8 +61,6 @@ export const reauthorize = asyncHandler(async (req, res, next) => {
       title: "Signin",
       reauthenticate: true,
       user: req.user.withoutPassword(),
-      imgsrc: captchaUrl,
-      captchaFieldName,
       csrfToken: req.csrfToken,
     });
   } else {
